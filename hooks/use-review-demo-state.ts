@@ -9,7 +9,18 @@ import {
   selectSelectedFinding,
   type ReviewState,
 } from "@/lib/review-state";
-import type { ActivityEvent, Matter } from "@/lib/types/legal-demo";
+import type {
+  ActivityEvent,
+  Clause,
+  Comment,
+  ContractDocument,
+  ContractSection,
+  Finding,
+  FindingDecision,
+  Matter,
+  ReviewSummary,
+  SuggestedEdit,
+} from "@/lib/types/legal-demo";
 
 const reviewDemoStateStoragePrefix = "legaltech-demo:review-state:";
 const reviewDemoStateChangedEvent = "review-demo-state:changed";
@@ -17,6 +28,65 @@ const reviewDemoStateCache = new Map<
   string,
   { serializedState: string | null; state: ReviewState | null }
 >();
+
+function getSafeSessionStorage(): Storage | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  try {
+    return window.sessionStorage;
+  } catch {
+    return null;
+  }
+}
+
+function safeGetSessionStorageItem(storageKey: string) {
+  const storage = getSafeSessionStorage();
+
+  if (!storage) {
+    return { ok: false as const, value: null };
+  }
+
+  try {
+    return {
+      ok: true as const,
+      value: storage.getItem(storageKey),
+    };
+  } catch {
+    return { ok: false as const, value: null };
+  }
+}
+
+function safeSetSessionStorageItem(storageKey: string, value: string) {
+  const storage = getSafeSessionStorage();
+
+  if (!storage) {
+    return false;
+  }
+
+  try {
+    storage.setItem(storageKey, value);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function safeRemoveSessionStorageItem(storageKey: string) {
+  const storage = getSafeSessionStorage();
+
+  if (!storage) {
+    return false;
+  }
+
+  try {
+    storage.removeItem(storageKey);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 function eventMatchesClause(
   event: ActivityEvent,
@@ -35,25 +105,224 @@ function eventMatchesClause(
   }
 }
 
-function isReviewState(value: unknown): value is ReviewState {
-  if (!value || typeof value !== "object") {
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function isString(value: unknown): value is string {
+  return typeof value === "string";
+}
+
+function isFiniteNumber(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+function isNullableString(value: unknown): value is string | null {
+  return value === null || isString(value);
+}
+
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every(isString);
+}
+
+function isFindingSeverity(value: unknown): value is Finding["severity"] {
+  return value === "low" || value === "medium" || value === "high";
+}
+
+function isCommentStatus(value: unknown): value is Comment["status"] {
+  return value === "open" || value === "resolved";
+}
+
+function isSuggestedEdit(value: unknown): value is SuggestedEdit {
+  return (
+    isRecord(value) &&
+    isString(value.id) &&
+    isString(value.clauseId) &&
+    isString(value.summary) &&
+    isString(value.beforeText) &&
+    isString(value.afterText) &&
+    isString(value.rationale)
+  );
+}
+
+function isFindingDecision(value: unknown): value is FindingDecision {
+  if (!isRecord(value) || !isString(value.kind)) {
     return false;
   }
 
-  const state = value as Partial<ReviewState>;
+  switch (value.kind) {
+    case "pending":
+      return Object.keys(value).length === 1;
+    case "accepted":
+      return isString(value.reviewedAt) && Object.keys(value).length === 2;
+    case "rejected":
+      return (
+        isString(value.reviewedAt) &&
+        isString(value.reason) &&
+        Object.keys(value).length === 3
+      );
+    case "needs_follow_up":
+      return (
+        isString(value.reviewedAt) &&
+        isString(value.note) &&
+        Object.keys(value).length === 3
+      );
+    default:
+      return false;
+  }
+}
+
+function isClause(value: unknown): value is Clause {
+  return (
+    isRecord(value) &&
+    isString(value.id) &&
+    isString(value.sectionId) &&
+    isFiniteNumber(value.order) &&
+    isString(value.title) &&
+    isString(value.text)
+  );
+}
+
+function isContractSection(value: unknown): value is ContractSection {
+  return (
+    isRecord(value) &&
+    isString(value.id) &&
+    isString(value.title) &&
+    isFiniteNumber(value.order) &&
+    Array.isArray(value.clauses) &&
+    value.clauses.every(isClause)
+  );
+}
+
+function isContractDocument(value: unknown): value is ContractDocument {
+  return (
+    isRecord(value) &&
+    isString(value.id) &&
+    isString(value.title) &&
+    isString(value.version) &&
+    Array.isArray(value.sections) &&
+    value.sections.every(isContractSection)
+  );
+}
+
+function isFinding(value: unknown): value is Finding {
+  return (
+    isRecord(value) &&
+    isString(value.id) &&
+    isString(value.clauseId) &&
+    isString(value.sectionId) &&
+    isString(value.title) &&
+    isFindingSeverity(value.severity) &&
+    isString(value.citation) &&
+    isString(value.rationale) &&
+    isFindingDecision(value.decision) &&
+    isSuggestedEdit(value.suggestedEdit)
+  );
+}
+
+function isComment(value: unknown): value is Comment {
+  return (
+    isRecord(value) &&
+    isString(value.id) &&
+    isString(value.clauseId) &&
+    (value.findingId === undefined || isString(value.findingId)) &&
+    isString(value.authorId) &&
+    isString(value.body) &&
+    isCommentStatus(value.status) &&
+    isString(value.createdAt)
+  );
+}
+
+function isActivityEvent(value: unknown): value is ActivityEvent {
+  if (
+    !isRecord(value) ||
+    !isString(value.kind) ||
+    !isString(value.id) ||
+    !isString(value.occurredAt) ||
+    !isString(value.message)
+  ) {
+    return false;
+  }
+
+  switch (value.kind) {
+    case "matter_opened":
+      return Object.keys(value).length === 4;
+    case "agent_run_superseded":
+      return (
+        isString(value.runId) &&
+        isString(value.supersededByRunId) &&
+        Object.keys(value).length === 6
+      );
+    case "finding_created":
+    case "finding_queued":
+    case "comment_added":
+      return isString(value.findingId) && isString(value.clauseId);
+    case "reviewer_waiting":
+      return isString(value.collaboratorId);
+    case "finding_decision":
+      return (
+        isString(value.findingId) &&
+        (value.decision === "accepted" ||
+          value.decision === "rejected" ||
+          value.decision === "needs_follow_up")
+      );
+    default:
+      return false;
+  }
+}
+
+function isReviewSummary(value: unknown): value is ReviewSummary {
+  return (
+    isRecord(value) &&
+    isFiniteNumber(value.totalFindings) &&
+    isFiniteNumber(value.reviewedCount) &&
+    isFiniteNumber(value.acceptedCount) &&
+    isFiniteNumber(value.rejectedCount) &&
+    isFiniteNumber(value.needsFollowUpCount) &&
+    isFiniteNumber(value.unresolvedCommentCount)
+  );
+}
+
+function isReviewState(value: unknown): value is ReviewState {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  if (
+    !isContractDocument(value.document) ||
+    !isRecord(value.findings) ||
+    !isStringArray(value.findingOrder) ||
+    !Array.isArray(value.comments) ||
+    !Array.isArray(value.activity) ||
+    !isString(value.selectedClauseId) ||
+    !isNullableString(value.selectedFindingId) ||
+    !isReviewSummary(value.summary)
+  ) {
+    return false;
+  }
+
+  const findings = value.findings as Record<string, unknown>;
+  const findingOrder = value.findingOrder as string[];
+  const comments = value.comments as unknown[];
+  const activity = value.activity as unknown[];
 
   return (
-    Array.isArray(state.activity) &&
-    Array.isArray(state.comments) &&
-    Array.isArray(state.findingOrder) &&
-    typeof state.document === "object" &&
-    state.document !== null &&
-    typeof state.findings === "object" &&
-    state.findings !== null &&
-    typeof state.selectedClauseId === "string" &&
-    typeof state.summary === "object" &&
-    state.summary !== null
+    Object.entries(findings).every(
+      ([findingId, finding]) =>
+        isFinding(finding) &&
+        finding.id === findingId &&
+        findingOrderHasFinding(findingOrder, findingId)
+    ) &&
+    findingOrder.every((findingId) =>
+      Object.prototype.hasOwnProperty.call(findings, findingId)
+    ) &&
+    comments.every(isComment) &&
+    activity.every(isActivityEvent)
   );
+}
+
+function findingOrderHasFinding(findingOrder: string[], findingId: string) {
+  return findingOrder.includes(findingId);
 }
 
 export function getReviewDemoStateStorageKey(matterId: string) {
@@ -66,14 +335,20 @@ export function readPersistedReviewDemoState(matterId: string): ReviewState | nu
   }
 
   const storageKey = getReviewDemoStateStorageKey(matterId);
-  const serializedState = window.sessionStorage.getItem(storageKey);
   const cachedState = reviewDemoStateCache.get(storageKey);
+  const storageRead = safeGetSessionStorageItem(storageKey);
+
+  if (!storageRead.ok) {
+    return cachedState?.state ?? null;
+  }
+
+  const serializedState = storageRead.value;
 
   if (cachedState?.serializedState === serializedState) {
     return cachedState.state;
   }
 
-  if (!serializedState) {
+  if (serializedState === null) {
     reviewDemoStateCache.set(storageKey, {
       serializedState: null,
       state: null,
@@ -92,7 +367,7 @@ export function readPersistedReviewDemoState(matterId: string): ReviewState | nu
       return parsedState;
     }
   } catch {
-    window.sessionStorage.removeItem(storageKey);
+    safeRemoveSessionStorageItem(storageKey);
     reviewDemoStateCache.set(storageKey, {
       serializedState: null,
       state: null,
@@ -100,7 +375,7 @@ export function readPersistedReviewDemoState(matterId: string): ReviewState | nu
     return null;
   }
 
-  window.sessionStorage.removeItem(storageKey);
+  safeRemoveSessionStorageItem(storageKey);
   reviewDemoStateCache.set(storageKey, {
     serializedState: null,
     state: null,
@@ -122,9 +397,10 @@ export function subscribeToReviewDemoState(
   }
 
   const storageKey = getReviewDemoStateStorageKey(matterId);
+  const sessionStorage = getSafeSessionStorage();
 
   const handleStorage = (event: StorageEvent) => {
-    if (event.storageArea !== window.sessionStorage) {
+    if (!sessionStorage || event.storageArea !== sessionStorage) {
       return;
     }
 
@@ -145,14 +421,18 @@ export function subscribeToReviewDemoState(
     onStoreChange();
   };
 
-  window.addEventListener("storage", handleStorage);
+  if (sessionStorage) {
+    window.addEventListener("storage", handleStorage);
+  }
   window.addEventListener(
     reviewDemoStateChangedEvent,
     handleStateChanged as EventListener
   );
 
   return () => {
-    window.removeEventListener("storage", handleStorage);
+    if (sessionStorage) {
+      window.removeEventListener("storage", handleStorage);
+    }
     window.removeEventListener(
       reviewDemoStateChangedEvent,
       handleStateChanged as EventListener
@@ -168,7 +448,10 @@ export function persistReviewDemoState(matterId: string, state: ReviewState) {
   const storageKey = getReviewDemoStateStorageKey(matterId);
   const serializedState = JSON.stringify(state);
 
-  window.sessionStorage.setItem(storageKey, serializedState);
+  if (!safeSetSessionStorageItem(storageKey, serializedState)) {
+    return;
+  }
+
   reviewDemoStateCache.set(storageKey, {
     serializedState,
     state,

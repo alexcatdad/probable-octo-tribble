@@ -1,9 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import DemoLayout from "@/app/(demo)/layout";
 import MatterOverviewPage from "@/app/(demo)/matters/[id]/page";
-import { getReviewDemoStateStorageKey } from "@/hooks/use-review-demo-state";
+import {
+  getReviewDemoStateStorageKey,
+  readPersistedReviewDemoState,
+} from "@/hooks/use-review-demo-state";
 import { seedMatter } from "@/lib/demo-data/matter";
-import { createReviewState, reviewReducer } from "@/lib/review-state";
+import { createReviewState } from "@/lib/review-state";
 
 afterEach(() => {
   window.sessionStorage.clear();
@@ -34,15 +37,19 @@ it("renders the matter overview route with the primary review context", async ()
   ).toBeInTheDocument();
 });
 
-it("hydrates the overview from persisted review state for the current browser session", async () => {
-  const persistedState = reviewReducer(createReviewState(seedMatter), {
-    type: "accept_finding",
-    findingId: "finding-indemnity-1",
-  });
+it("falls back to the seeded review state when the persisted snapshot is malformed", async () => {
+  const baseState = createReviewState(seedMatter);
+  const malformedState = {
+    ...baseState,
+    summary: {
+      ...baseState.summary,
+      reviewedCount: "1" as unknown as number,
+    },
+  };
 
   window.sessionStorage.setItem(
     getReviewDemoStateStorageKey(seedMatter.id),
-    JSON.stringify(persistedState)
+    JSON.stringify(malformedState)
   );
 
   const page = await MatterOverviewPage({
@@ -52,14 +59,55 @@ it("hydrates the overview from persisted review state for the current browser se
   render(page);
 
   expect(
-    await screen.findByText(/1 of 4 decisions recorded/i)
+    await screen.findByText(/0 of 4 decisions recorded/i)
   ).toBeInTheDocument();
   expect(
-    screen.getByText(/3 findings are still waiting for a decision/i)
+    screen.getByText(/4 findings are still waiting for a decision/i)
   ).toBeInTheDocument();
-  expect(
-    screen.getByText(/accepted indemnity is broader than the risk allocation supports/i)
-  ).toBeInTheDocument();
+});
+
+it("renders the overview even when sessionStorage access throws", async () => {
+  const throwingStorage = {
+    getItem() {
+      throw new Error("sessionStorage is unavailable");
+    },
+    setItem() {
+      throw new Error("sessionStorage is unavailable");
+    },
+    removeItem() {
+      throw new Error("sessionStorage is unavailable");
+    },
+    clear() {
+      throw new Error("sessionStorage is unavailable");
+    },
+    key() {
+      return null;
+    },
+    get length() {
+      return 0;
+    },
+  } as Storage;
+
+  window.sessionStorage.clear();
+  readPersistedReviewDemoState(seedMatter.id);
+
+  const sessionStorageSpy = vi
+    .spyOn(window, "sessionStorage", "get")
+    .mockReturnValue(throwingStorage);
+
+  try {
+    const page = await MatterOverviewPage({
+      params: Promise.resolve({ id: seedMatter.id }),
+    });
+
+    render(page);
+
+    expect(
+      screen.getByText(/0 of 4 decisions recorded/i)
+    ).toBeInTheDocument();
+  } finally {
+    sessionStorageSpy.mockRestore();
+  }
 });
 
 it("renders generic demo shell chrome for nested demo routes", () => {

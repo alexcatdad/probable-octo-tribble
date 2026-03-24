@@ -1,5 +1,7 @@
-import { render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import MatterOverviewPage from "@/app/(demo)/matters/[id]/page";
+import { getReviewDemoStateStorageKey } from "@/hooks/use-review-demo-state";
 import { seedMatter } from "@/lib/demo-data/matter";
 import { ReviewWorkspace } from "./review-workspace";
 
@@ -78,6 +80,44 @@ describe("ReviewWorkspace", () => {
     );
 
     expect(screen.getByText(/1 of 4 findings reviewed/i)).toBeInTheDocument();
+  });
+
+  it("persists reviewed state so the overview route hydrates from the same session", async () => {
+    const user = userEvent.setup();
+
+    render(<ReviewWorkspace matter={seedMatter} />);
+
+    await user.click(
+      screen.getByRole("button", {
+        name: /indemnity is broader than the risk allocation supports/i,
+      })
+    );
+    await user.click(
+      screen.getByRole("button", { name: /accept suggestion/i })
+    );
+
+    await waitFor(() => {
+      expect(
+        window.sessionStorage.getItem(
+          getReviewDemoStateStorageKey(seedMatter.id)
+        )
+      ).toMatch(/"reviewedCount":1/);
+    });
+
+    cleanup();
+
+    const page = await MatterOverviewPage({
+      params: Promise.resolve({ id: seedMatter.id }),
+    });
+
+    render(page);
+
+    expect(
+      await screen.findByText(/1 of 4 decisions recorded/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/3 findings are still waiting for a decision/i)
+    ).toBeInTheDocument();
   });
 
   it("reveals rejected state in the findings rail after a rejection", async () => {

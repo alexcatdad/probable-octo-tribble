@@ -1,5 +1,9 @@
 import "@testing-library/jest-dom/vitest";
 
 afterEach(() => {
-  window.sessionStorage.clear();
+  try {
+    window.sessionStorage.clear();
+  } catch {
+    // Some tests deliberately replace storage with a throwing shim.
+  }
 });
