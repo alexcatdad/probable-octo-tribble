@@ -49,6 +49,11 @@ export type FindingDecisionKind =
   | "rejected"
   | "needs_follow_up";
 
+export type ReviewedFindingDecisionKind = Exclude<
+  FindingDecisionKind,
+  "pending"
+>;
+
 export type FindingDecision =
   | { kind: "pending" }
   | { kind: "accepted"; reviewedAt: string }
@@ -149,12 +154,20 @@ export type ActivityEvent =
       clauseId: string;
     }
   | {
+      kind: "finding_queued";
+      id: string;
+      occurredAt: string;
+      message: string;
+      findingId: string;
+      clauseId: string;
+    }
+  | {
       kind: "finding_decision";
       id: string;
       occurredAt: string;
       message: string;
       findingId: string;
-      decision: FindingDecisionKind;
+      decision: ReviewedFindingDecisionKind;
     };
 
 export interface ReviewSummary {
@@ -179,4 +192,3 @@ export interface Matter {
   comments: Comment[];
   activity: ActivityEvent[];
 }
-

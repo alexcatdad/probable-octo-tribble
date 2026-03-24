@@ -8,7 +8,6 @@ import type {
   Matter,
   ReviewSummary,
 } from "./types/legal-demo";
-import { seedMatter } from "./demo-data/matter";
 
 export interface ReviewState {
   document: ContractDocument;
@@ -17,7 +16,7 @@ export interface ReviewState {
   comments: Comment[];
   activity: ActivityEvent[];
   selectedClauseId: string;
-  selectedFindingId: string;
+  selectedFindingId: string | null;
   summary: ReviewSummary;
 }
 
@@ -72,13 +71,20 @@ function findClause(document: ContractDocument, clauseId: string): Clause | unde
   return undefined;
 }
 
-function findClauseIdForFinding(state: ReviewState, findingId: string): string | undefined {
-  return state.findings[findingId]?.clauseId;
+function findClauseById(state: ReviewState, clauseId: string): Clause | undefined {
+  return state.document.sections
+    .flatMap((section) => section.clauses)
+    .find((clause) => clause.id === clauseId);
 }
 
-function firstFindingForClause(state: ReviewState, clauseId: string): string | undefined {
-  return state.findingOrder.find(
-    (findingId) => state.findings[findingId]?.clauseId === clauseId
+function firstFindingForClause(
+  state: ReviewState,
+  clauseId: string
+): string | null {
+  return (
+    state.findingOrder.find(
+      (findingId) => state.findings[findingId]?.clauseId === clauseId
+    ) ?? null
   );
 }
 
@@ -122,10 +128,10 @@ export function createReviewState(matter: Matter): ReviewState {
   const findings = buildFindingsMap(matter.findings);
   const findingOrder = matter.findings.map((finding) => finding.id);
   const selectedClauseId = matter.document.sections[0]?.clauses[0]?.id ?? "";
-  const selectedFindingId =
-    matter.findings.find((finding) => finding.clauseId === selectedClauseId)?.id ??
-    matter.findings[0]?.id ??
-    "";
+  const selectedFindingId = selectedClauseId
+    ? matter.findings.find((finding) => finding.clauseId === selectedClauseId)?.id ??
+      null
+    : null;
 
   return {
     document: matter.document,
@@ -138,8 +144,6 @@ export function createReviewState(matter: Matter): ReviewState {
     summary: buildReviewSummary(matter.findings, matter.comments),
   };
 }
-
-export const seedReviewState = createReviewState(seedMatter);
 
 export function selectClauseById(
   state: ReviewState,
@@ -156,8 +160,12 @@ export function selectSelectedClause(state: ReviewState): Clause | undefined {
 
 export function selectFindingById(
   state: ReviewState,
-  findingId: string
+  findingId: string | null
 ): Finding | undefined {
+  if (!findingId) {
+    return undefined;
+  }
+
   return state.findings[findingId];
 }
 
@@ -181,26 +189,29 @@ export function reviewReducer(
 ): ReviewState {
   switch (action.type) {
     case "select_clause": {
-      const nextSelectedFindingId =
-        firstFindingForClause(state, action.clauseId) ?? state.selectedFindingId;
+      const clause = findClauseById(state, action.clauseId);
 
-      return {
-        ...state,
-        selectedClauseId: action.clauseId,
-        selectedFindingId: nextSelectedFindingId,
-      };
-    }
-    case "select_finding": {
-      const clauseId = findClauseIdForFinding(state, action.findingId);
-
-      if (!clauseId) {
+      if (!clause) {
         return state;
       }
 
       return {
         ...state,
-        selectedClauseId: clauseId,
-        selectedFindingId: action.findingId,
+        selectedClauseId: clause.id,
+        selectedFindingId: firstFindingForClause(state, clause.id),
+      };
+    }
+    case "select_finding": {
+      const finding = selectFindingById(state, action.findingId);
+
+      if (!finding) {
+        return state;
+      }
+
+      return {
+        ...state,
+        selectedClauseId: finding.clauseId,
+        selectedFindingId: finding.id,
       };
     }
     case "accept_finding":

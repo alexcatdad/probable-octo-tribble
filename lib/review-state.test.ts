@@ -1,13 +1,12 @@
 import { expect, it } from "vitest";
-import {
-  reviewReducer,
-  seedReviewState,
-  selectSelectedClause,
-  selectSelectedFinding,
-} from "./review-state";
+import { seedActivity } from "./demo-data/activity";
+import { seedDocument } from "./demo-data/document";
+import { seedMatter, seedReviewState } from "./demo-data/matter";
+import { createReviewState, reviewReducer, selectSelectedFinding } from "./review-state";
+import type { Matter } from "./types/legal-demo";
 
 it("defaults to the first clause and first finding in the seed matter", () => {
-  expect(selectSelectedClause(seedReviewState)?.id).toBe("clause-indemnity-1");
+  expect(seedReviewState.selectedClauseId).toBe("clause-indemnity-1");
   expect(selectSelectedFinding(seedReviewState)?.id).toBe(
     "finding-indemnity-1"
   );
@@ -15,17 +14,66 @@ it("defaults to the first clause and first finding in the seed matter", () => {
   expect(seedReviewState.summary.unresolvedCommentCount).toBe(1);
 });
 
-it("updates the selected finding when a clause is selected", () => {
+it("rejects an unknown clause selection without changing the current state", () => {
   const nextState = reviewReducer(seedReviewState, {
     type: "select_clause",
-    clauseId: "clause-liability-1",
+    clauseId: "clause-does-not-exist",
   });
 
-  expect(nextState.selectedClauseId).toBe("clause-liability-1");
-  expect(nextState.selectedFindingId).toBe("finding-liability-1");
+  expect(nextState.selectedClauseId).toBe(seedReviewState.selectedClauseId);
+  expect(nextState.selectedFindingId).toBe(seedReviewState.selectedFindingId);
 });
 
-it("updates the selected clause when a finding is selected", () => {
+it("clears the selected finding when a valid clause has no findings", () => {
+  const matterWithoutClauseFindings: Matter = {
+    ...seedMatter,
+    document: {
+      ...seedDocument,
+      sections: [
+        {
+          id: "section-indemnity",
+          title: "Indemnity",
+          order: 1,
+          clauses: [
+            {
+              id: "clause-indemnity-1",
+              sectionId: "section-indemnity",
+              order: 1,
+              title: "Vendor indemnity",
+              text: seedDocument.sections[0].clauses[0].text,
+            },
+            {
+              id: "clause-no-findings",
+              sectionId: "section-indemnity",
+              order: 2,
+              title: "Unflagged clause",
+              text: "This clause has no findings attached.",
+            },
+          ],
+        },
+      ],
+    },
+    findings: [
+      {
+        ...seedMatter.findings[0],
+        clauseId: "clause-indemnity-1",
+      },
+    ],
+    comments: [],
+    activity: [...seedActivity],
+  };
+  const matterState = createReviewState(matterWithoutClauseFindings);
+  const nextState = reviewReducer(matterState, {
+    type: "select_clause",
+    clauseId: "clause-no-findings",
+  });
+
+  expect(nextState.selectedClauseId).toBe("clause-no-findings");
+  expect(nextState.selectedFindingId).toBeNull();
+  expect(selectSelectedFinding(nextState)).toBeUndefined();
+});
+
+it("updates the selected finding when a finding is selected", () => {
   const nextState = reviewReducer(seedReviewState, {
     type: "select_finding",
     findingId: "finding-data-1",
@@ -76,6 +124,23 @@ it("marks a finding as needing follow-up", () => {
   });
   expect(nextState.summary.reviewedCount).toBe(1);
   expect(nextState.summary.needsFollowUpCount).toBe(1);
+});
+
+it("records queued findings as queued activity instead of a pending decision", () => {
+  const queuedEvent = seedReviewState.activity.find(
+    (event) => event.kind === "finding_queued"
+  );
+
+  expect(queuedEvent).toMatchObject({
+    kind: "finding_queued",
+    findingId: "finding-data-1",
+    clauseId: "clause-data-1",
+  });
+  expect(
+    seedReviewState.activity.some(
+      (event) => event.kind === "finding_decision" && event.decision === "pending"
+    )
+  ).toBe(false);
 });
 
 it("adds a comment, appends activity, and increments unresolved comment counts", () => {

@@ -47,12 +47,11 @@ export const seedActivity: ActivityEvent[] = [
     clauseId: "clause-indemnity-1",
   },
   {
-    kind: "finding_decision",
+    kind: "finding_queued",
     id: "activity-7",
     occurredAt: "2026-03-24T08:30:00.000Z",
     message: "The review queue is ready for clause-by-clause decisions.",
     findingId: "finding-data-1",
-    decision: "pending",
+    clauseId: "clause-data-1",
   },
 ];
-

@@ -5,6 +5,7 @@ import type {
   Finding,
   Matter,
 } from "../types/legal-demo";
+import { createReviewState } from "../review-state";
 import { seedActivity } from "./activity";
 import { seedDocument } from "./document";
 
@@ -181,5 +182,6 @@ export const seedMatter: Matter = {
   activity: seedActivity,
 };
 
-export const demoMatter = seedMatter;
+export const seedReviewState = createReviewState(seedMatter);
 
+export const demoMatter = seedMatter;
