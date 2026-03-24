@@ -17,6 +17,8 @@ function activityLabel(event: ActivityEvent) {
       return "Flagged";
     case "comment_added":
       return "Comment";
+    case "comment_status_changed":
+      return "Status";
     case "finding_queued":
       return "Queued";
     default:

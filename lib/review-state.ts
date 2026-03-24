@@ -27,6 +27,11 @@ export type ReviewAction =
   | { type: "reject_finding"; findingId: string; reason: string }
   | { type: "mark_needs_follow_up"; findingId: string; note: string }
   | {
+      type: "update_comment_status";
+      commentId: string;
+      status: Comment["status"];
+    }
+  | {
       type: "add_comment";
       clauseId: string;
       body: string;
@@ -59,7 +64,7 @@ function buildReviewSummary(
     needsFollowUpCount: findings.filter(
       (finding) => finding.decision.kind === "needs_follow_up"
     ).length,
-    unresolvedCommentCount: comments.filter((comment) => comment.status === "open")
+    unresolvedCommentCount: comments.filter((comment) => comment.status !== "resolved")
       .length,
   };
 }
@@ -99,6 +104,13 @@ function updateFindingDecision(
   return {
     ...finding,
     decision,
+  };
+}
+
+function updateCommentStatus(comment: Comment, status: Comment["status"]): Comment {
+  return {
+    ...comment,
+    status,
   };
 }
 
@@ -296,6 +308,40 @@ export function reviewReducer(
         commentId: comment.id,
         clauseId: action.clauseId,
         message: action.body,
+      });
+
+      return {
+        ...state,
+        comments: nextComments,
+        activity: nextActivity,
+        summary: buildReviewSummary(Object.values(state.findings), nextComments),
+      };
+    }
+    case "update_comment_status": {
+      const currentComment = state.comments.find(
+        (comment) => comment.id === action.commentId
+      );
+
+      if (!currentComment || currentComment.status === action.status) {
+        return state;
+      }
+
+      const nextComments = state.comments.map((comment) =>
+        comment.id === action.commentId
+          ? updateCommentStatus(comment, action.status)
+          : comment
+      );
+      const nextActivity = addActivityEvent(state, {
+        kind: "comment_status_changed",
+        commentId: currentComment.id,
+        clauseId: currentComment.clauseId,
+        status: action.status,
+        message:
+          action.status === "waiting_on_partner"
+            ? "Waiting on partner review before closing this comment."
+            : action.status === "resolved"
+              ? "Resolved comment."
+              : "Reopened comment for active negotiation review.",
       });
 
       return {

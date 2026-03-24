@@ -7,6 +7,7 @@ interface CommentsPanelProps {
   clause?: Clause;
   comments: Comment[];
   onAddComment: (clauseId: string, body: string) => void;
+  onUpdateCommentStatus: (commentId: string, status: Comment["status"]) => void;
 }
 
 function formatTimestamp(timestamp: string) {
@@ -20,10 +21,33 @@ function formatTimestamp(timestamp: string) {
   }).format(new Date(timestamp));
 }
 
+function commentStatusTone(status: Comment["status"]) {
+  switch (status) {
+    case "open":
+      return "border-[rgba(157,115,74,0.24)] bg-[rgba(157,115,74,0.1)] text-amber-900";
+    case "waiting_on_partner":
+      return "border-[rgba(63,83,115,0.18)] bg-[rgba(63,83,115,0.1)] text-slate-900";
+    case "resolved":
+      return "border-[rgba(86,114,94,0.24)] bg-[rgba(86,114,94,0.12)] text-emerald-950";
+  }
+}
+
+function commentStatusLabel(status: Comment["status"]) {
+  switch (status) {
+    case "open":
+      return "Open";
+    case "waiting_on_partner":
+      return "Waiting on partner";
+    case "resolved":
+      return "Resolved";
+  }
+}
+
 export function CommentsPanel({
   clause,
   comments,
   onAddComment,
+  onUpdateCommentStatus,
 }: CommentsPanelProps) {
   const [draft, setDraft] = useState("");
 
@@ -99,14 +123,47 @@ export function CommentsPanel({
             className="calm-transition rounded-[1.25rem] border border-slate-900/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(246,243,237,0.92)_100%)] px-4 py-4"
           >
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <span className="rounded-full border border-[rgba(157,115,74,0.24)] bg-[rgba(157,115,74,0.1)] px-2.5 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-amber-900">
-                {comment.status}
+              <span
+                className={`rounded-full border px-2.5 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.14em] ${commentStatusTone(comment.status)}`}
+              >
+                {commentStatusLabel(comment.status)}
               </span>
               <span className="text-xs text-slate-500">
                 {formatTimestamp(comment.createdAt)} UTC
               </span>
             </div>
             <p className="mt-3 text-sm leading-6 text-slate-700">{comment.body}</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {comment.status !== "waiting_on_partner" ? (
+                <button
+                  type="button"
+                  onClick={() =>
+                    onUpdateCommentStatus(comment.id, "waiting_on_partner")
+                  }
+                  className="calm-transition rounded-full border border-[rgba(63,83,115,0.16)] bg-white/80 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+                >
+                  Waiting on partner
+                </button>
+              ) : null}
+              {comment.status !== "resolved" ? (
+                <button
+                  type="button"
+                  onClick={() => onUpdateCommentStatus(comment.id, "resolved")}
+                  className="calm-transition rounded-full border border-[rgba(86,114,94,0.18)] bg-[rgba(86,114,94,0.08)] px-3 py-1.5 text-xs font-medium text-emerald-950 hover:bg-[rgba(86,114,94,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+                >
+                  Resolve comment
+                </button>
+              ) : null}
+              {comment.status !== "open" ? (
+                <button
+                  type="button"
+                  onClick={() => onUpdateCommentStatus(comment.id, "open")}
+                  className="calm-transition rounded-full border border-slate-900/10 bg-white/70 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+                >
+                  Reopen comment
+                </button>
+              ) : null}
+            </div>
           </article>
         ))}
       </div>

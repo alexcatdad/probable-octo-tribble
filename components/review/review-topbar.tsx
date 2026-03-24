@@ -1,6 +1,17 @@
 import Link from "next/link";
 import type { AgentRun, Matter, ReviewSummary } from "@/lib/types/legal-demo";
 
+function formatTimestamp(timestamp: string) {
+  return new Intl.DateTimeFormat("en", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "UTC",
+  }).format(new Date(timestamp));
+}
+
 function describeActiveRun(run?: AgentRun) {
   if (!run) {
     return {
@@ -113,6 +124,59 @@ export function ReviewTopbar({
               <p className="mt-2 text-lg font-semibold tracking-[-0.04em] text-slate-950">
                 {summary.unresolvedCommentCount}
               </p>
+            </div>
+          </div>
+
+          <div className="rounded-[1.2rem] border border-slate-900/10 bg-white/82 px-4 py-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-[0.68rem] uppercase tracking-[0.2em] text-slate-500">
+                  Active reviewers
+                </p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  The workspace keeps partner, associate, and reviewer state visible
+                  while triage moves.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {matter.collaborators.map((collaborator) => {
+                  const waitingStatus =
+                    collaborator.status.kind === "waiting"
+                      ? collaborator.status
+                      : null;
+
+                  return (
+                    <article
+                      key={collaborator.id}
+                      className="min-w-[180px] rounded-[1rem] border border-slate-900/10 bg-[rgba(255,255,255,0.78)] px-3 py-3"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="relative flex size-10 shrink-0 items-center justify-center rounded-full bg-slate-950 text-xs font-semibold text-white">
+                          {collaborator.initials}
+                          <span
+                            className={`absolute right-0 top-0 size-3 rounded-full border-2 border-white ${
+                              waitingStatus ? "bg-amber-400" : "bg-emerald-400"
+                            }`}
+                          />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-slate-950">
+                            {collaborator.name}
+                          </p>
+                          <p className="text-[0.68rem] uppercase tracking-[0.16em] text-slate-500">
+                            {collaborator.title}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="mt-3 text-xs leading-5 text-slate-600">
+                        {waitingStatus
+                          ? `Waiting on ${waitingStatus.waitingOn} since ${formatTimestamp(waitingStatus.since)} UTC.`
+                          : "Active in the current review window."}
+                      </p>
+                    </article>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>

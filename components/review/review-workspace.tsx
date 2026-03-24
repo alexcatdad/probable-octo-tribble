@@ -1,9 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { ActivityPanel } from "@/components/review/activity-panel";
 import { ClauseOutline } from "@/components/review/clause-outline";
 import { CommentsPanel } from "@/components/review/comments-panel";
-import { DocumentPane } from "@/components/review/document-pane";
+import {
+  DocumentPane,
+  type DocumentReviewMode,
+} from "@/components/review/document-pane";
 import { FindingsRail } from "@/components/review/findings-rail";
 import { ReviewTopbar } from "@/components/review/review-topbar";
 import { useReviewDemoState } from "@/hooks/use-review-demo-state";
@@ -36,6 +40,69 @@ function selectActiveRun(agentRuns: Matter["agentRuns"]) {
 export function ReviewWorkspace({ matter }: ReviewWorkspaceProps) {
   const review = useReviewDemoState(matter);
   const activeRun = selectActiveRun(matter.agentRuns);
+  const [documentViewMode, setDocumentViewMode] =
+    useState<DocumentReviewMode>("clean");
+  const [preview, setPreview] = useState<{
+    clauseId: string | null;
+    findingId: string | null;
+    source: "queue" | "document" | null;
+  }>({
+    clauseId: null,
+    findingId: null,
+    source: null,
+  });
+
+  const findingById = Object.fromEntries(
+    review.findings.map((finding) => [finding.id, finding])
+  );
+  const firstFindingByClause = Object.fromEntries(
+    review.findings.map((finding) => [finding.clauseId, finding.id])
+  );
+
+  function clearPreview(source?: "queue" | "document") {
+    setPreview((currentPreview) => {
+      if (source && currentPreview.source !== source) {
+        return currentPreview;
+      }
+
+      return {
+        clauseId: null,
+        findingId: null,
+        source: null,
+      };
+    });
+  }
+
+  function handlePreviewClause(clauseId: string | null) {
+    if (!clauseId) {
+      clearPreview("document");
+      return;
+    }
+
+    setPreview({
+      clauseId,
+      findingId: firstFindingByClause[clauseId] ?? null,
+      source: "document",
+    });
+  }
+
+  function handlePreviewFinding(
+    findingId: string | null,
+    source: "queue" | "document"
+  ) {
+    if (!findingId) {
+      clearPreview(source);
+      return;
+    }
+
+    const finding = findingById[findingId];
+
+    setPreview({
+      clauseId: finding?.clauseId ?? null,
+      findingId,
+      source,
+    });
+  }
 
   return (
     <main className="space-y-5 pb-10">
@@ -64,7 +131,16 @@ export function ReviewWorkspace({ matter }: ReviewWorkspaceProps) {
               findings={review.findings}
               selectedClauseId={review.state.selectedClauseId}
               selectedFindingId={review.state.selectedFindingId}
-              onSelectClause={review.selectClause}
+              previewClauseId={preview.clauseId}
+              previewFindingId={preview.findingId}
+              previewSource={preview.source}
+              viewMode={documentViewMode}
+              onSelectClause={(clauseId) => {
+                clearPreview();
+                review.selectClause(clauseId);
+              }}
+              onPreviewClause={handlePreviewClause}
+              onViewModeChange={setDocumentViewMode}
             />
 
             <div className="grid gap-5 lg:grid-cols-[minmax(0,1.04fr)_minmax(290px,0.96fr)]">
@@ -73,6 +149,7 @@ export function ReviewWorkspace({ matter }: ReviewWorkspaceProps) {
                 clause={review.selectedClause}
                 comments={review.selectedClauseComments}
                 onAddComment={review.addComment}
+                onUpdateCommentStatus={review.updateCommentStatus}
               />
               <ActivityPanel
                 clause={review.selectedClause}
@@ -85,8 +162,14 @@ export function ReviewWorkspace({ matter }: ReviewWorkspaceProps) {
             findings={review.findings}
             document={review.state.document}
             selectedFindingId={review.state.selectedFindingId}
+            previewFindingId={preview.findingId}
+            previewSource={preview.source}
             selectedFinding={review.selectedFinding}
-            onSelectFinding={review.selectFinding}
+            onSelectFinding={(findingId) => {
+              clearPreview();
+              review.selectFinding(findingId);
+            }}
+            onPreviewFinding={handlePreviewFinding}
             onAcceptSuggestion={review.acceptSuggestion}
             onRejectSuggestion={(findingId) =>
               review.rejectSuggestion(findingId, reviewActionCopy.rejectReason)

@@ -85,6 +85,59 @@ describe("ReviewWorkspace", () => {
     expect(screen.getByText(/1 of 4 findings reviewed/i)).toBeInTheDocument();
   });
 
+  it("switches document review modes so the active clause can show inline redlines", async () => {
+    const user = userEvent.setup();
+
+    render(<ReviewWorkspace matter={seedMatter} />);
+
+    await user.click(
+      screen.getByRole("button", {
+        name: /security incident notice should be faster/i,
+      })
+    );
+
+    expect(
+      screen.queryByText(/proposed replacement/i)
+    ).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /redline/i }));
+
+    expect(screen.getByText(/proposed replacement/i)).toBeInTheDocument();
+    expect(
+      within(
+        screen
+          .getByRole("button", { name: /document clause 3\.1/i })
+          .closest("article") as HTMLElement
+      ).getByText(/notify customer promptly and in any event within 48 hours/i)
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /clean/i }));
+
+    expect(
+      screen.queryByText(/proposed replacement/i)
+    ).not.toBeInTheDocument();
+  });
+
+  it("previews the linked clause when a finding is hovered in the review queue", async () => {
+    const user = userEvent.setup();
+
+    render(<ReviewWorkspace matter={seedMatter} />);
+
+    await user.hover(
+      screen.getByRole("button", {
+        name: /renewal notice period is too long/i,
+      })
+    );
+
+    expect(
+      within(
+        screen
+          .getByRole("button", { name: /document clause 4\.1/i })
+          .closest("article") as HTMLElement
+      ).getByText(/queue preview/i)
+    ).toBeInTheDocument();
+  });
+
   it("persists a new comment so the overview route hydrates from serialized state", async () => {
     const user = userEvent.setup();
 
@@ -162,7 +215,13 @@ describe("ReviewWorkspace", () => {
         name: /security incident notice should be faster/i,
       })
     );
-    await user.click(screen.getByRole("button", { name: /needs follow-up/i }));
+    await user.click(
+      within(
+        screen.getByRole("heading", {
+          name: /shorten the security incident notice period/i,
+        }).closest("section") as HTMLElement
+      ).getByRole("button", { name: /^needs follow-up$/i })
+    );
 
     const dataCard = screen
       .getByRole("button", {
@@ -193,6 +252,33 @@ describe("ReviewWorkspace", () => {
     expect(
       within(screen.getByRole("region", { name: /activity panel/i })).getByText(
         newComment
+      )
+    ).toBeInTheDocument();
+  });
+
+  it("supports waiting and resolved states for clause comments", async () => {
+    const user = userEvent.setup();
+
+    render(<ReviewWorkspace matter={seedMatter} />);
+
+    await user.click(
+      screen.getByRole("button", { name: /waiting on partner/i })
+    );
+
+    expect(screen.getByText(/^waiting on partner$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^1$/i)).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /resolve comment/i }));
+
+    expect(screen.getByText(/^resolved$/i)).toBeInTheDocument();
+    expect(
+      within(screen.getByText(/open comments/i).closest("div") as HTMLElement).getByText(
+        /^0$/i
+      )
+    ).toBeInTheDocument();
+    expect(
+      within(screen.getByRole("region", { name: /activity panel/i })).getByText(
+        /resolved comment/i
       )
     ).toBeInTheDocument();
   });
@@ -232,6 +318,48 @@ describe("ReviewWorkspace", () => {
       screen.getByText(
         /partner should confirm the indemnity and liability positions/i
       )
+    ).toBeInTheDocument();
+  });
+
+  it("shows live reviewer presence cues inside the workspace header", () => {
+    render(<ReviewWorkspace matter={seedMatter} />);
+
+    expect(screen.getByText(/active reviewers/i)).toBeInTheDocument();
+    expect(screen.getByText(/jordan blake/i)).toBeInTheDocument();
+    expect(screen.getByText(/maya chen/i)).toBeInTheDocument();
+    expect(screen.getByText(/waiting on partner sign-off/i)).toBeInTheDocument();
+  });
+
+  it("filters the review queue and jumps to the next unreviewed finding in that slice", async () => {
+    const user = userEvent.setup();
+
+    render(<ReviewWorkspace matter={seedMatter} />);
+
+    await user.click(screen.getByRole("button", { name: /^high risk$/i }));
+
+    const queue = screen.getByRole("complementary", { name: /findings rail/i });
+    expect(
+      within(queue).getByRole("button", {
+        name: /indemnity is broader than the risk allocation supports/i,
+      })
+    ).toBeInTheDocument();
+    expect(
+      within(queue).getByRole("button", {
+        name: /security incident notice should be faster/i,
+      })
+    ).toBeInTheDocument();
+    expect(
+      within(queue).queryByRole("button", {
+        name: /liability carve-outs should be tighter/i,
+      })
+    ).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /next unreviewed/i }));
+
+    expect(
+      screen.getByRole("heading", {
+        name: /shorten the security incident notice period/i,
+      })
     ).toBeInTheDocument();
   });
 

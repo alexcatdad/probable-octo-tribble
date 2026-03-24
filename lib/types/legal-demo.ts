@@ -81,7 +81,7 @@ export interface Finding {
   suggestedEdit: SuggestedEdit;
 }
 
-export type CommentStatus = "open" | "resolved";
+export type CommentStatus = "open" | "waiting_on_partner" | "resolved";
 
 export interface Comment {
   id: string;
@@ -152,6 +152,15 @@ export type ActivityEvent =
       message: string;
       commentId: string;
       clauseId: string;
+    }
+  | {
+      kind: "comment_status_changed";
+      id: string;
+      occurredAt: string;
+      message: string;
+      commentId: string;
+      clauseId: string;
+      status: CommentStatus;
     }
   | {
       kind: "finding_queued";

@@ -100,6 +100,7 @@ function eventMatchesClause(
   switch (event.kind) {
     case "finding_created":
     case "comment_added":
+    case "comment_status_changed":
     case "finding_queued":
       return event.clauseId === clauseId;
     case "finding_decision":
@@ -134,7 +135,11 @@ function isFindingSeverity(value: unknown): value is Finding["severity"] {
 }
 
 function isCommentStatus(value: unknown): value is Comment["status"] {
-  return value === "open" || value === "resolved";
+  return (
+    value === "open" ||
+    value === "waiting_on_partner" ||
+    value === "resolved"
+  );
 }
 
 function isSuggestedEdit(value: unknown): value is SuggestedEdit {
@@ -262,6 +267,12 @@ function isActivityEvent(value: unknown): value is ActivityEvent {
       return isString(value.findingId) && isString(value.clauseId);
     case "comment_added":
       return isString(value.commentId) && isString(value.clauseId);
+    case "comment_status_changed":
+      return (
+        isString(value.commentId) &&
+        isString(value.clauseId) &&
+        isCommentStatus(value.status)
+      );
     case "reviewer_waiting":
       return isString(value.collaboratorId);
     case "finding_decision":
@@ -565,6 +576,9 @@ export function useReviewDemoState(matter: Matter) {
     },
     addComment(clauseId: string, body: string) {
       dispatch({ type: "add_comment", clauseId, body });
+    },
+    updateCommentStatus(commentId: string, status: Comment["status"]) {
+      dispatch({ type: "update_comment_status", commentId, status });
     },
   };
 }

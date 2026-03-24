@@ -1,12 +1,20 @@
 import { cn } from "@/lib/utils";
 import type { ContractDocument, Finding } from "@/lib/types/legal-demo";
 
+export type DocumentReviewMode = "clean" | "redline" | "ai_suggestions";
+
 interface DocumentPaneProps {
   document: ContractDocument;
   findings: Finding[];
   selectedClauseId: string;
   selectedFindingId: string | null;
+  previewClauseId: string | null;
+  previewFindingId: string | null;
+  previewSource: "queue" | "document" | null;
+  viewMode: DocumentReviewMode;
   onSelectClause: (clauseId: string) => void;
+  onPreviewClause: (clauseId: string | null) => void;
+  onViewModeChange: (mode: DocumentReviewMode) => void;
 }
 
 function severityTone(
@@ -32,8 +40,17 @@ export function DocumentPane({
   findings,
   selectedClauseId,
   selectedFindingId,
+  previewClauseId,
+  previewFindingId,
+  previewSource,
+  viewMode,
   onSelectClause,
+  onPreviewClause,
+  onViewModeChange,
 }: DocumentPaneProps) {
+  const activeClauseId = previewClauseId ?? selectedClauseId;
+  const activeFindingId = previewFindingId ?? selectedFindingId;
+
   return (
     <section className="editorial-surface overflow-hidden rounded-[1.9rem] border border-[color:var(--surface-document-edge)]">
       <div className="border-b border-[rgba(93,100,113,0.12)] px-5 py-5 sm:px-7 sm:py-6">
@@ -49,6 +66,34 @@ export function DocumentPane({
           <div className="rounded-full border border-slate-900/10 bg-white/[0.88] px-3 py-1 text-xs font-medium text-slate-600">
             Clause highlights stay linked to the review queue
           </div>
+        </div>
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          {(
+            [
+              { id: "clean", label: "Clean" },
+              { id: "redline", label: "Redline" },
+              { id: "ai_suggestions", label: "AI suggestions" },
+            ] as const
+          ).map((modeOption) => {
+            const isActive = viewMode === modeOption.id;
+
+            return (
+              <button
+                key={modeOption.id}
+                type="button"
+                aria-pressed={isActive}
+                onClick={() => onViewModeChange(modeOption.id)}
+                className={cn(
+                  "calm-transition rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400",
+                  isActive
+                    ? "border-slate-950 bg-slate-950 text-white"
+                    : "border-slate-900/10 bg-white/[0.82] text-slate-600 hover:bg-white",
+                )}
+              >
+                {modeOption.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -69,11 +114,14 @@ export function DocumentPane({
               const clauseFindings = findings.filter(
                 (finding) => finding.clauseId === clause.id
               );
-              const selectedFinding = clauseFindings.find(
-                (finding) => finding.id === selectedFindingId
+              const activeFinding = clauseFindings.find(
+                (finding) => finding.id === activeFindingId
               );
-              const dominantFinding = selectedFinding ?? clauseFindings[0];
+              const dominantFinding = activeFinding ?? clauseFindings[0];
               const isSelected = clause.id === selectedClauseId;
+              const isPreviewed =
+                previewSource === "queue" && clause.id === previewClauseId;
+              const isActiveClause = clause.id === activeClauseId;
 
               return (
                 <article
@@ -91,6 +139,10 @@ export function DocumentPane({
                   <button
                     type="button"
                     onClick={() => onSelectClause(clause.id)}
+                    onMouseEnter={() => onPreviewClause(clause.id)}
+                    onMouseLeave={() => onPreviewClause(null)}
+                    onFocus={() => onPreviewClause(clause.id)}
+                    onBlur={() => onPreviewClause(null)}
                     aria-label={`Document clause ${section.order}.${clause.order}`}
                     className="w-full text-left focus-visible:outline-none"
                   >
@@ -103,6 +155,11 @@ export function DocumentPane({
                           {isSelected ? (
                             <span className="calm-transition rounded-full border border-[rgba(184,145,93,0.5)] bg-white/[0.76] px-2.5 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-amber-900">
                               Active clause
+                            </span>
+                          ) : null}
+                          {isPreviewed ? (
+                            <span className="calm-transition rounded-full border border-[rgba(63,83,115,0.18)] bg-[rgba(63,83,115,0.08)] px-2.5 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-slate-900">
+                              Queue preview
                             </span>
                           ) : null}
                         </div>
@@ -130,6 +187,43 @@ export function DocumentPane({
                       {clause.text}
                     </p>
                   </button>
+
+                  {dominantFinding && isActiveClause && viewMode === "redline" ? (
+                    <div className="mt-4 grid gap-3 border-t border-[rgba(93,100,113,0.12)] pt-4">
+                      <article className="rounded-[1.15rem] border border-[rgba(166,100,97,0.18)] bg-[rgba(166,100,97,0.08)] px-4 py-4">
+                        <p className="text-[0.64rem] font-semibold uppercase tracking-[0.16em] text-rose-900">
+                          Current text
+                        </p>
+                        <p className="mt-3 text-sm leading-6 text-rose-950 line-through decoration-rose-700/70 decoration-2">
+                          {dominantFinding.suggestedEdit.beforeText}
+                        </p>
+                      </article>
+                      <article className="rounded-[1.15rem] border border-[rgba(86,114,94,0.22)] bg-[rgba(86,114,94,0.08)] px-4 py-4">
+                        <p className="text-[0.64rem] font-semibold uppercase tracking-[0.16em] text-emerald-900">
+                          Proposed replacement
+                        </p>
+                        <p className="mt-3 text-sm leading-6 text-emerald-950">
+                          {dominantFinding.suggestedEdit.afterText}
+                        </p>
+                      </article>
+                    </div>
+                  ) : null}
+
+                  {dominantFinding &&
+                  isActiveClause &&
+                  viewMode === "ai_suggestions" ? (
+                    <div className="mt-4 rounded-[1.15rem] border border-[rgba(184,145,93,0.24)] bg-[rgba(255,248,237,0.9)] px-4 py-4">
+                      <p className="text-[0.64rem] font-semibold uppercase tracking-[0.16em] text-amber-900">
+                        Machine suggestion
+                      </p>
+                      <p className="mt-2 text-sm font-semibold text-slate-900">
+                        {dominantFinding.suggestedEdit.summary}
+                      </p>
+                      <p className="mt-2 text-sm leading-6 text-slate-700">
+                        {dominantFinding.suggestedEdit.rationale}
+                      </p>
+                    </div>
+                  ) : null}
 
                   {dominantFinding ? (
                     <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-[rgba(93,100,113,0.12)] pt-4">

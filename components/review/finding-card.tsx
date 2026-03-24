@@ -42,14 +42,20 @@ interface FindingCardProps {
   finding: Finding;
   clauseLabel: string;
   isSelected: boolean;
+  isPreviewed: boolean;
+  previewLabel?: string;
   onSelect: () => void;
+  onPreviewChange: (isPreviewed: boolean) => void;
 }
 
 export function FindingCard({
   finding,
   clauseLabel,
   isSelected,
+  isPreviewed,
+  previewLabel,
   onSelect,
+  onPreviewChange,
 }: FindingCardProps) {
   return (
     <article
@@ -57,12 +63,18 @@ export function FindingCard({
         "rounded-[1.2rem] border transition-colors",
         isSelected
           ? "border-amber-300/60 bg-white text-slate-950 shadow-[0_16px_40px_-30px_rgba(209,153,74,0.48)]"
+          : isPreviewed
+            ? "border-slate-300/80 bg-white/90 text-slate-950 shadow-[0_16px_34px_-26px_rgba(66,77,95,0.28)]"
           : "border-white/10 bg-white/5 text-slate-100 hover:border-white/20 hover:bg-white/8",
       )}
     >
       <button
         type="button"
         onClick={onSelect}
+        onMouseEnter={() => onPreviewChange(true)}
+        onMouseLeave={() => onPreviewChange(false)}
+        onFocus={() => onPreviewChange(true)}
+        onBlur={() => onPreviewChange(false)}
         className="block w-full rounded-[1.2rem] px-4 py-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
       >
         <div className="flex flex-wrap items-start justify-between gap-2">
@@ -77,6 +89,16 @@ export function FindingCard({
             {decisionLabel(finding.decision.kind)}
           </span>
         </div>
+        {isPreviewed && previewLabel ? (
+          <p
+            className={cn(
+              "mt-3 text-[0.64rem] font-semibold uppercase tracking-[0.16em]",
+              isSelected ? "text-slate-500" : "text-slate-300",
+            )}
+          >
+            {previewLabel}
+          </p>
+        ) : null}
 
         <h3 className="mt-3 text-sm font-semibold leading-6">{finding.title}</h3>
         <p

@@ -156,3 +156,43 @@ it("adds a comment, appends activity, and increments unresolved comment counts",
     seedReviewState.summary.unresolvedCommentCount + 1
   );
 });
+
+it("marks a comment as waiting on partner without reducing unresolved counts", () => {
+  const nextState = reviewReducer(seedReviewState, {
+    type: "update_comment_status",
+    commentId: "comment-1",
+    status: "waiting_on_partner",
+  });
+
+  expect(nextState.comments[0]).toMatchObject({
+    id: "comment-1",
+    status: "waiting_on_partner",
+  });
+  expect(nextState.summary.unresolvedCommentCount).toBe(
+    seedReviewState.summary.unresolvedCommentCount
+  );
+  expect(nextState.activity.at(-1)).toMatchObject({
+    kind: "comment_status_changed",
+    commentId: "comment-1",
+    status: "waiting_on_partner",
+  });
+});
+
+it("resolving a comment removes it from unresolved counts", () => {
+  const nextState = reviewReducer(seedReviewState, {
+    type: "update_comment_status",
+    commentId: "comment-1",
+    status: "resolved",
+  });
+
+  expect(nextState.comments[0]).toMatchObject({
+    id: "comment-1",
+    status: "resolved",
+  });
+  expect(nextState.summary.unresolvedCommentCount).toBe(0);
+  expect(nextState.activity.at(-1)).toMatchObject({
+    kind: "comment_status_changed",
+    commentId: "comment-1",
+    status: "resolved",
+  });
+});
