@@ -2,8 +2,8 @@ import { render, screen } from "@testing-library/react";
 import DemoLayout from "@/app/(demo)/layout";
 import MatterOverviewPage from "@/app/(demo)/matters/[id]/page";
 import {
+  clearReviewDemoStateCacheForTests,
   getReviewDemoStateStorageKey,
-  readPersistedReviewDemoState,
 } from "@/hooks/use-review-demo-state";
 import { seedMatter } from "@/lib/demo-data/matter";
 import { createReviewState } from "@/lib/review-state";
@@ -38,6 +38,8 @@ it("renders the matter overview route with the primary review context", async ()
 });
 
 it("falls back to the seeded review state when the persisted snapshot is malformed", async () => {
+  clearReviewDemoStateCacheForTests();
+
   const baseState = createReviewState(seedMatter);
   const malformedState = {
     ...baseState,
@@ -67,6 +69,8 @@ it("falls back to the seeded review state when the persisted snapshot is malform
 });
 
 it("renders the overview even when sessionStorage access throws", async () => {
+  clearReviewDemoStateCacheForTests();
+
   const throwingStorage = {
     getItem() {
       throw new Error("sessionStorage is unavailable");
@@ -87,9 +91,6 @@ it("renders the overview even when sessionStorage access throws", async () => {
       return 0;
     },
   } as Storage;
-
-  window.sessionStorage.clear();
-  readPersistedReviewDemoState(seedMatter.id);
 
   const sessionStorageSpy = vi
     .spyOn(window, "sessionStorage", "get")

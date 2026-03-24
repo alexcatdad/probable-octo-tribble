@@ -29,6 +29,10 @@ const reviewDemoStateCache = new Map<
   { serializedState: string | null; state: ReviewState | null }
 >();
 
+export function clearReviewDemoStateCacheForTests() {
+  reviewDemoStateCache.clear();
+}
+
 function getSafeSessionStorage(): Storage | null {
   if (typeof window === "undefined") {
     return null;
@@ -255,8 +259,9 @@ function isActivityEvent(value: unknown): value is ActivityEvent {
       );
     case "finding_created":
     case "finding_queued":
-    case "comment_added":
       return isString(value.findingId) && isString(value.clauseId);
+    case "comment_added":
+      return isString(value.commentId) && isString(value.clauseId);
     case "reviewer_waiting":
       return isString(value.collaboratorId);
     case "finding_decision":

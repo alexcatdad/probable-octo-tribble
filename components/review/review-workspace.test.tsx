@@ -1,7 +1,10 @@
 import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import MatterOverviewPage from "@/app/(demo)/matters/[id]/page";
-import { getReviewDemoStateStorageKey } from "@/hooks/use-review-demo-state";
+import {
+  clearReviewDemoStateCacheForTests,
+  getReviewDemoStateStorageKey,
+} from "@/hooks/use-review-demo-state";
 import { seedMatter } from "@/lib/demo-data/matter";
 import { ReviewWorkspace } from "./review-workspace";
 
@@ -82,28 +85,29 @@ describe("ReviewWorkspace", () => {
     expect(screen.getByText(/1 of 4 findings reviewed/i)).toBeInTheDocument();
   });
 
-  it("persists reviewed state so the overview route hydrates from the same session", async () => {
+  it("persists a new comment so the overview route hydrates from serialized state", async () => {
     const user = userEvent.setup();
 
     render(<ReviewWorkspace matter={seedMatter} />);
 
-    await user.click(
-      screen.getByRole("button", {
-        name: /indemnity is broader than the risk allocation supports/i,
-      })
+    const newComment =
+      "Please confirm the indemnity carve-out before we close this.";
+
+    await user.type(
+      screen.getByRole("textbox", { name: /comment for active clause/i }),
+      newComment
     );
-    await user.click(
-      screen.getByRole("button", { name: /accept suggestion/i })
-    );
+    await user.click(screen.getByRole("button", { name: /add comment/i }));
 
     await waitFor(() => {
       expect(
         window.sessionStorage.getItem(
           getReviewDemoStateStorageKey(seedMatter.id)
         )
-      ).toMatch(/"reviewedCount":1/);
+      ).toContain('"kind":"comment_added"');
     });
 
+    clearReviewDemoStateCacheForTests();
     cleanup();
 
     const page = await MatterOverviewPage({
@@ -113,10 +117,12 @@ describe("ReviewWorkspace", () => {
     render(page);
 
     expect(
-      await screen.findByText(/1 of 4 decisions recorded/i)
+      screen.getByText(/0 of 4 decisions recorded/i)
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/3 findings are still waiting for a decision/i)
+      within(
+        screen.getByText(/unresolved comments/i).closest("article") as HTMLElement
+      ).getByText(/^2$/i)
     ).toBeInTheDocument();
   });
 
