@@ -39,21 +39,26 @@ export function FindingsRail({
       aria-label="Findings rail"
       className="space-y-5 xl:sticky xl:top-5"
     >
-      <section className="rounded-[1.55rem] border border-slate-900/10 bg-slate-950 px-5 py-5 text-slate-100 shadow-[0_20px_70px_-55px_rgba(23,32,51,0.8)]">
+      <section className="panel-surface-dark rounded-[1.6rem] border border-white/10 px-5 py-5 text-slate-100">
         <div className="mb-4">
-          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">
+          <p className="section-kicker text-slate-400">
             Findings rail
           </p>
-          <h2 className="mt-2 text-xl font-semibold tracking-[-0.04em]">
-            Review queue
-          </h2>
+          <div className="mt-2 flex flex-wrap items-end justify-between gap-3">
+            <h2 className="font-heading text-[1.9rem] leading-none tracking-[-0.05em]">
+              Review queue
+            </h2>
+            <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-slate-300">
+              {findings.length} findings
+            </span>
+          </div>
           <p className="mt-2 text-sm leading-6 text-slate-300">
             Every machine suggestion keeps the underlying clause citation and
             reviewer action in view.
           </p>
         </div>
 
-        <div className="space-y-3">
+        <div className="soft-scroll space-y-3 min-[1380px]:max-h-[calc(100vh-17rem)] min-[1380px]:overflow-y-auto min-[1380px]:pr-1">
           {findings.map((finding) => (
             <FindingCard
               key={finding.id}

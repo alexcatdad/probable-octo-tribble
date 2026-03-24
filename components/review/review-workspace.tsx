@@ -48,7 +48,7 @@ export function ReviewWorkspace({ matter }: ReviewWorkspaceProps) {
         reviewProgressLabel={review.reviewProgressLabel}
       />
 
-      <section className="grid gap-5 xl:grid-cols-[260px_minmax(0,1.15fr)_390px] xl:items-start">
+      <section className="grid gap-5 xl:grid-cols-[250px_minmax(0,1fr)] xl:items-start">
         <ClauseOutline
           document={review.state.document}
           selectedClauseId={review.state.selectedClauseId}
@@ -57,43 +57,45 @@ export function ReviewWorkspace({ matter }: ReviewWorkspaceProps) {
           onSelectClause={review.selectClause}
         />
 
-        <div className="space-y-5">
-          <DocumentPane
-            document={review.state.document}
-            findings={review.findings}
-            selectedClauseId={review.state.selectedClauseId}
-            selectedFindingId={review.state.selectedFindingId}
-            onSelectClause={review.selectClause}
-          />
+        <div className="grid gap-5 min-[1380px]:grid-cols-[minmax(0,1fr)_372px] min-[1380px]:items-start">
+          <div className="space-y-5">
+            <DocumentPane
+              document={review.state.document}
+              findings={review.findings}
+              selectedClauseId={review.state.selectedClauseId}
+              selectedFindingId={review.state.selectedFindingId}
+              onSelectClause={review.selectClause}
+            />
 
-          <div className="grid gap-5 lg:grid-cols-[minmax(0,1.02fr)_minmax(300px,0.98fr)]">
-            <CommentsPanel
-              key={review.selectedClause?.id ?? "no-active-clause"}
-              clause={review.selectedClause}
-              comments={review.selectedClauseComments}
-              onAddComment={review.addComment}
-            />
-            <ActivityPanel
-              clause={review.selectedClause}
-              activity={review.selectedClauseActivity}
-            />
+            <div className="grid gap-5 lg:grid-cols-[minmax(0,1.04fr)_minmax(290px,0.96fr)]">
+              <CommentsPanel
+                key={review.selectedClause?.id ?? "no-active-clause"}
+                clause={review.selectedClause}
+                comments={review.selectedClauseComments}
+                onAddComment={review.addComment}
+              />
+              <ActivityPanel
+                clause={review.selectedClause}
+                activity={review.selectedClauseActivity}
+              />
+            </div>
           </div>
-        </div>
 
-        <FindingsRail
-          findings={review.findings}
-          document={review.state.document}
-          selectedFindingId={review.state.selectedFindingId}
-          selectedFinding={review.selectedFinding}
-          onSelectFinding={review.selectFinding}
-          onAcceptSuggestion={review.acceptSuggestion}
-          onRejectSuggestion={(findingId) =>
-            review.rejectSuggestion(findingId, reviewActionCopy.rejectReason)
-          }
-          onMarkNeedsFollowUp={(findingId) =>
-            review.markNeedsFollowUp(findingId, reviewActionCopy.followUpNote)
-          }
-        />
+          <FindingsRail
+            findings={review.findings}
+            document={review.state.document}
+            selectedFindingId={review.state.selectedFindingId}
+            selectedFinding={review.selectedFinding}
+            onSelectFinding={review.selectFinding}
+            onAcceptSuggestion={review.acceptSuggestion}
+            onRejectSuggestion={(findingId) =>
+              review.rejectSuggestion(findingId, reviewActionCopy.rejectReason)
+            }
+            onMarkNeedsFollowUp={(findingId) =>
+              review.markNeedsFollowUp(findingId, reviewActionCopy.followUpNote)
+            }
+          />
+        </div>
       </section>
     </main>
   );

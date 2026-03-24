@@ -14,16 +14,16 @@ function severityTone(
   isSelected: boolean
 ) {
   if (isSelected) {
-    return "border-amber-300/90 bg-[linear-gradient(135deg,rgba(255,248,235,0.98)_0%,rgba(248,238,215,0.95)_100%)]";
+    return "border-[rgba(184,145,93,0.55)] bg-[linear-gradient(135deg,rgba(255,248,237,0.98)_0%,rgba(249,241,223,0.94)_100%)] shadow-[0_18px_48px_-34px_rgba(159,118,73,0.42)]";
   }
 
   switch (severity) {
     case "high":
-      return "border-rose-200/90 bg-rose-50/80";
+      return "border-[rgba(166,100,97,0.22)] bg-[rgba(166,100,97,0.08)]";
     case "medium":
-      return "border-amber-200/90 bg-amber-50/80";
+      return "border-[rgba(157,115,74,0.24)] bg-[rgba(157,115,74,0.08)]";
     case "low":
-      return "border-sky-200/90 bg-sky-50/75";
+      return "border-[rgba(87,114,144,0.2)] bg-[rgba(87,114,144,0.08)]";
   }
 }
 
@@ -35,28 +35,28 @@ export function DocumentPane({
   onSelectClause,
 }: DocumentPaneProps) {
   return (
-    <section className="overflow-hidden rounded-[1.7rem] border border-slate-900/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(248,244,237,0.96)_100%)] shadow-[0_24px_70px_-58px_rgba(23,32,51,0.58)]">
-      <div className="border-b border-slate-900/8 px-6 py-5 sm:px-7">
+    <section className="editorial-surface overflow-hidden rounded-[1.9rem] border border-[color:var(--surface-document-edge)]">
+      <div className="border-b border-[rgba(93,100,113,0.12)] px-5 py-5 sm:px-7 sm:py-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-500">
+            <p className="section-kicker">
               Document pane
             </p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-slate-950">
+            <h2 className="mt-2 font-heading text-[2rem] leading-none tracking-[-0.05em] text-slate-950">
               Contract text
             </h2>
           </div>
-          <div className="rounded-full border border-slate-900/10 bg-white/90 px-3 py-1 text-xs font-medium text-slate-600">
+          <div className="rounded-full border border-slate-900/10 bg-white/[0.88] px-3 py-1 text-xs font-medium text-slate-600">
             Clause highlights stay linked to the review queue
           </div>
         </div>
       </div>
 
-      <div className="space-y-4 px-5 py-5 sm:px-7 sm:py-7">
+      <div className="space-y-5 px-4 py-5 sm:px-7 sm:py-7">
         {document.sections.map((section) => (
           <section key={section.id} className="space-y-3">
-            <div className="flex items-center justify-between gap-3">
-              <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+            <div className="flex items-center justify-between gap-3 border-b border-[rgba(93,100,113,0.1)] px-2 pb-3">
+              <h3 className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">
                 {section.order}. {section.title}
               </h3>
               <span className="text-xs text-slate-400">
@@ -80,12 +80,12 @@ export function DocumentPane({
                   key={clause.id}
                   id={clause.id}
                   className={cn(
-                    "rounded-[1.45rem] border px-5 py-5 transition-colors",
+                    "calm-transition calm-hover-lift scroll-mt-24 rounded-[1.55rem] border px-4 py-5 sm:px-5",
                     dominantFinding
                       ? severityTone(dominantFinding.severity, isSelected)
                       : isSelected
-                        ? "border-slate-300/90 bg-slate-50/90"
-                        : "border-slate-900/8 bg-white/78",
+                        ? "border-slate-300/90 bg-[rgba(250,247,241,0.96)] shadow-[0_16px_44px_-34px_rgba(66,77,95,0.22)]"
+                        : "border-[rgba(93,100,113,0.12)] bg-[rgba(255,255,255,0.72)]",
                   )}
                 >
                   <button
@@ -95,13 +95,13 @@ export function DocumentPane({
                     className="w-full text-left focus-visible:outline-none"
                   >
                     <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div>
+                      <div className="space-y-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <h4 className="text-lg font-semibold tracking-[-0.03em] text-slate-950">
+                          <h4 className="font-heading text-[1.45rem] leading-none tracking-[-0.04em] text-slate-950 sm:text-[1.55rem]">
                             {clause.title}
                           </h4>
                           {isSelected ? (
-                            <span className="rounded-full border border-amber-300/80 bg-white/70 px-2.5 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-amber-900">
+                            <span className="calm-transition rounded-full border border-[rgba(184,145,93,0.5)] bg-white/[0.76] px-2.5 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-amber-900">
                               Active clause
                             </span>
                           ) : null}
@@ -113,10 +113,10 @@ export function DocumentPane({
 
                       {dominantFinding ? (
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="rounded-full border border-slate-900/10 bg-white/80 px-2.5 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-slate-600">
+                          <span className="rounded-full border border-slate-900/10 bg-white/[0.84] px-2.5 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-slate-600">
                             {dominantFinding.severity} severity
                           </span>
-                          <span className="rounded-full border border-slate-900/10 bg-white/80 px-2.5 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-slate-600">
+                          <span className="rounded-full border border-slate-900/10 bg-white/[0.84] px-2.5 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-slate-600">
                             {clauseFindings.length} linked finding
                             {clauseFindings.length === 1 ? "" : "s"}
                           </span>
@@ -125,19 +125,15 @@ export function DocumentPane({
                     </div>
 
                     <p
-                      className="mt-4 text-[1.03rem] leading-8 text-slate-800"
-                      style={{
-                        fontFamily:
-                          '"Iowan Old Style","Palatino Linotype","Book Antiqua",serif',
-                      }}
+                      className="document-type document-muted mt-5 max-w-[48rem] text-[1.08rem] leading-8 tracking-[0.002em] sm:text-[1.12rem] sm:leading-9"
                     >
                       {clause.text}
                     </p>
                   </button>
 
                   {dominantFinding ? (
-                    <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-slate-900/8 pt-4">
-                      <span className="rounded-full border border-slate-900/10 bg-white/85 px-3 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-slate-600">
+                    <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-[rgba(93,100,113,0.12)] pt-4">
+                      <span className="rounded-full border border-slate-900/10 bg-white/[0.85] px-3 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-slate-600">
                         Citation anchor
                       </span>
                       <span className="text-xs leading-5 text-slate-600">

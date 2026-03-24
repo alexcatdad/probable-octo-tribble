@@ -64,12 +64,12 @@ export function AgentRunsList({
   );
 
   return (
-    <section className="rounded-[1.55rem] border border-slate-900/10 bg-white/88 px-5 py-5 shadow-[0_18px_60px_-50px_rgba(23,32,51,0.4)]">
+    <section className="panel-surface rounded-[1.6rem] border border-slate-900/10 px-5 py-5">
       <div className="mb-4">
-        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-slate-500">
+        <p className="section-kicker">
           Agent runs
         </p>
-        <h2 className="mt-2 text-xl font-semibold tracking-[-0.04em] text-slate-950">
+        <h2 className="mt-2 font-heading text-[1.85rem] leading-none tracking-[-0.05em] text-slate-950">
           Recent machine passes
         </h2>
       </div>
@@ -81,11 +81,13 @@ export function AgentRunsList({
           return (
             <article
               key={run.id}
-              className="rounded-[1.2rem] border border-slate-900/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,rgba(247,244,238,0.9)_100%)] px-4 py-4"
+              className="calm-transition rounded-[1.25rem] border border-slate-900/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,rgba(247,244,238,0.9)_100%)] px-4 py-4"
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <h3 className="text-sm font-semibold text-slate-950">{run.name}</h3>
+                  <h3 className="font-heading text-[1.3rem] leading-none tracking-[-0.04em] text-slate-950">
+                    {run.name}
+                  </h3>
                   <p className="mt-1 text-xs text-slate-500">
                     Started {formatTimestamp(run.startedAt)} UTC
                   </p>
