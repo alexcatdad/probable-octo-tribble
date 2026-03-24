@@ -42,7 +42,7 @@ function statusCopy(
         "Reviewer";
 
       return {
-        label: "needs review",
+        label: "needs human review",
         tone: "bg-amber-50 text-amber-900 border-amber-200/80",
         detail: `${requestedBy}: ${status.note}`,
       };

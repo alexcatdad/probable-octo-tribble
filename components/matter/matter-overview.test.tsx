@@ -19,7 +19,7 @@ it("renders the matter overview route with the primary review context", async ()
     screen.getByRole("link", { name: /open review workspace/i })
   ).toHaveAttribute("href", "/matters/matter-acme-v-omnicore/review");
   expect(screen.getByText(/^completed$/i)).toBeInTheDocument();
-  expect(screen.getByText(/^needs review$/i)).toBeInTheDocument();
+  expect(screen.getByText(/^needs human review$/i)).toBeInTheDocument();
   expect(screen.getByText(/^superseded$/i)).toBeInTheDocument();
   expect(
     screen.getByText(/the review queue is ready for clause-by-clause decisions/i)
