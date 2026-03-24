@@ -42,7 +42,7 @@ export function DocumentPane({
             <p className="section-kicker">
               Document pane
             </p>
-            <h2 className="mt-2 font-heading text-[2rem] leading-none tracking-[-0.05em] text-slate-950">
+            <h2 className="mt-2 text-[2rem] leading-none tracking-[-0.05em] text-slate-950">
               Contract text
             </h2>
           </div>
@@ -97,7 +97,7 @@ export function DocumentPane({
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div className="space-y-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <h4 className="font-heading text-[1.45rem] leading-none tracking-[-0.04em] text-slate-950 sm:text-[1.55rem]">
+                          <h4 className="document-type text-[1.45rem] leading-none tracking-[-0.04em] text-slate-950 sm:text-[1.55rem]">
                             {clause.title}
                           </h4>
                           {isSelected ? (
