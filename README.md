@@ -20,8 +20,10 @@ npm run build
 ## Production Preview
 
 ```bash
-npm run start
+npm run preview
 ```
+
+`npm run preview` builds first, then starts the production server. The equivalent manual sequence is `npm run build && npm run start`.
 
 Open the root route at `/` first, then click into the overview and review workspace.
 

@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "preview": "npm run build && npm run start",
     "lint": "eslint",
     "test": "vitest run",
     "check": "npm run lint && npm test && npm run build"

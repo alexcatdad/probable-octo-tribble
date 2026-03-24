@@ -19,7 +19,7 @@ This demo is a focused legaltech workspace for reviewing a matter end to end. It
 
 - Trust: reviewers can see the machine output, the human decision, and the history around each clause in one place.
 - Clarity: the layout keeps the document, findings, and discussion separate enough to scan quickly, but still linked together.
-- Reversible actions: accept, reject, or defer actions are explicit, so nothing feels like a hidden one-way commit.
+- Reversible actions: accept, reject, or `Needs follow-up` actions are explicit, so nothing feels like a hidden one-way commit.
 - Traceability: the activity feed and decision summaries make it easy to explain why the current state exists.
 
 ## Interview Talking Points
