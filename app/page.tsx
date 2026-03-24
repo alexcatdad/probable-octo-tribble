@@ -27,7 +27,7 @@ export default function Home() {
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <Link
-                href="/matters"
+                href="/matters/matter-acme-v-omnicore"
                 className="inline-flex h-11 items-center justify-center rounded-full bg-slate-950 px-5 text-sm font-medium text-white transition-colors hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
               >
                 Open demo
