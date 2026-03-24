@@ -37,7 +37,7 @@ export function FindingsRail({
   return (
     <aside
       aria-label="Findings rail"
-      className="space-y-5 xl:sticky xl:top-5"
+      className="space-y-5 min-[1180px]:sticky min-[1180px]:top-5"
     >
       <section className="panel-surface-dark rounded-[1.6rem] border border-white/10 px-5 py-5 text-slate-100">
         <div className="mb-4">
@@ -58,7 +58,7 @@ export function FindingsRail({
           </p>
         </div>
 
-        <div className="soft-scroll space-y-3 min-[1380px]:max-h-[calc(100vh-17rem)] min-[1380px]:overflow-y-auto min-[1380px]:pr-1">
+        <div className="soft-scroll space-y-3 min-[1180px]:max-h-[calc(100vh-17rem)] min-[1180px]:overflow-y-auto min-[1180px]:pr-1">
           {findings.map((finding) => (
             <FindingCard
               key={finding.id}

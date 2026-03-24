@@ -57,7 +57,7 @@ export function ReviewWorkspace({ matter }: ReviewWorkspaceProps) {
           onSelectClause={review.selectClause}
         />
 
-        <div className="grid gap-5 min-[1380px]:grid-cols-[minmax(0,1fr)_372px] min-[1380px]:items-start">
+        <div className="grid gap-5 min-[1180px]:grid-cols-[minmax(0,1fr)_360px] min-[1180px]:items-start">
           <div className="space-y-5">
             <DocumentPane
               document={review.state.document}
