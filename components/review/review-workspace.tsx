@@ -13,11 +13,29 @@ interface ReviewWorkspaceProps {
   matter: Matter;
 }
 
+const reviewActionCopy = {
+  rejectReason:
+    "Fallback language should stay with the client negotiation team.",
+  followUpNote: "Needs partner guidance before the redline is finalized.",
+};
+
+function selectActiveRun(agentRuns: Matter["agentRuns"]) {
+  const runNeedingHumanReview = agentRuns.find(
+    (run) => run.status.kind === "needs_human_review"
+  );
+
+  if (runNeedingHumanReview) {
+    return runNeedingHumanReview;
+  }
+
+  return [...agentRuns].sort(
+    (left, right) => Date.parse(right.startedAt) - Date.parse(left.startedAt)
+  )[0];
+}
+
 export function ReviewWorkspace({ matter }: ReviewWorkspaceProps) {
   const review = useReviewDemoState(matter);
-  const activeRun =
-    matter.agentRuns.find((run) => run.status.kind === "needs_human_review") ??
-    matter.agentRuns[matter.agentRuns.length - 1];
+  const activeRun = selectActiveRun(matter.agentRuns);
 
   return (
     <main className="space-y-5 pb-10">
@@ -50,6 +68,7 @@ export function ReviewWorkspace({ matter }: ReviewWorkspaceProps) {
 
           <div className="grid gap-5 lg:grid-cols-[minmax(0,1.02fr)_minmax(300px,0.98fr)]">
             <CommentsPanel
+              key={review.selectedClause?.id ?? "no-active-clause"}
               clause={review.selectedClause}
               comments={review.selectedClauseComments}
               onAddComment={review.addComment}
@@ -68,8 +87,12 @@ export function ReviewWorkspace({ matter }: ReviewWorkspaceProps) {
           selectedFinding={review.selectedFinding}
           onSelectFinding={review.selectFinding}
           onAcceptSuggestion={review.acceptSuggestion}
-          onRejectSuggestion={review.rejectSuggestion}
-          onMarkNeedsFollowUp={review.markNeedsFollowUp}
+          onRejectSuggestion={(findingId) =>
+            review.rejectSuggestion(findingId, reviewActionCopy.rejectReason)
+          }
+          onMarkNeedsFollowUp={(findingId) =>
+            review.markNeedsFollowUp(findingId, reviewActionCopy.followUpNote)
+          }
         />
       </section>
     </main>

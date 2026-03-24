@@ -1,7 +1,15 @@
 import Link from "next/link";
 import type { AgentRun, Matter, ReviewSummary } from "@/lib/types/legal-demo";
 
-function describeActiveRun(run: AgentRun) {
+function describeActiveRun(run?: AgentRun) {
+  if (!run) {
+    return {
+      label: "No active run",
+      detail: "No machine pass is currently attached to this workspace.",
+      tone: "border-slate-700/70 bg-slate-900/50 text-slate-100",
+    };
+  }
+
   switch (run.status.kind) {
     case "needs_human_review":
       return {
@@ -26,7 +34,7 @@ function describeActiveRun(run: AgentRun) {
 
 interface ReviewTopbarProps {
   matter: Matter;
-  activeRun: AgentRun;
+  activeRun?: AgentRun;
   summary: ReviewSummary;
   pendingDecisionCount: number;
   progressPercent: number;
@@ -115,7 +123,7 @@ export function ReviewTopbar({
               Current agent pass
             </p>
             <h2 className="mt-2 text-xl font-semibold tracking-[-0.04em]">
-              {activeRun.name}
+              {activeRun?.name ?? "No active run"}
             </h2>
             <p className="mt-3 text-sm leading-6 text-slate-300">
               {runPresentation.detail}

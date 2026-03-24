@@ -104,18 +104,18 @@ export function useReviewDemoState(matter: Matter) {
     acceptSuggestion(findingId: string) {
       dispatch({ type: "accept_finding", findingId });
     },
-    rejectSuggestion(findingId: string) {
+    rejectSuggestion(findingId: string, reason: string) {
       dispatch({
         type: "reject_finding",
         findingId,
-        reason: "Fallback language should stay with the client negotiation team.",
+        reason,
       });
     },
-    markNeedsFollowUp(findingId: string) {
+    markNeedsFollowUp(findingId: string, note: string) {
       dispatch({
         type: "mark_needs_follow_up",
         findingId,
-        note: "Needs partner guidance before the redline is finalized.",
+        note,
       });
     },
     addComment(clauseId: string, body: string) {
