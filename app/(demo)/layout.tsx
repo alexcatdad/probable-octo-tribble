@@ -15,9 +15,7 @@ export default function DemoLayout({
           >
             Legaltech demo
           </Link>
-          <p className="text-xs text-slate-500">
-            Matter overview
-          </p>
+          <p className="text-xs text-slate-500">Demo workspace</p>
         </header>
         <div className="flex-1">{children}</div>
       </div>

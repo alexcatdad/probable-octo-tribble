@@ -34,6 +34,10 @@ export type ReviewAction =
     };
 
 const seedReviewStart = "2026-03-24T08:00:00.000Z";
+type DistributiveOmit<T, K extends PropertyKey> = T extends unknown
+  ? Omit<T, K>
+  : never;
+type ActivityEventInput = DistributiveOmit<ActivityEvent, "id" | "occurredAt">;
 
 function buildFindingsMap(findings: Finding[]): Record<string, Finding> {
   return Object.fromEntries(findings.map((finding) => [finding.id, finding]));
@@ -112,7 +116,7 @@ function nextTimestamp(activity: ActivityEvent[]): string {
 
 function addActivityEvent(
   state: ReviewState,
-  event: Omit<ActivityEvent, "id" | "occurredAt">
+  event: ActivityEventInput
 ): ActivityEvent[] {
   return [
     ...state.activity,

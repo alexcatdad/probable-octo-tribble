@@ -31,7 +31,8 @@ export function CollaboratorStrip({
 
       <div className="space-y-3">
         {collaborators.map((collaborator) => {
-          const waiting = collaborator.status.kind === "waiting";
+          const waitingStatus =
+            collaborator.status.kind === "waiting" ? collaborator.status : null;
 
           return (
             <article
@@ -42,7 +43,7 @@ export function CollaboratorStrip({
                 {collaborator.initials}
                 <span
                   className={`absolute right-0 top-0 size-3 rounded-full border-2 border-slate-950 ${
-                    waiting ? "bg-amber-400" : "bg-emerald-400"
+                    waitingStatus ? "bg-amber-400" : "bg-emerald-400"
                   }`}
                 />
               </div>
@@ -56,8 +57,8 @@ export function CollaboratorStrip({
                   </span>
                 </div>
                 <p className="mt-2 text-sm leading-6 text-slate-300">
-                  {waiting
-                    ? `Waiting on ${collaborator.status.waitingOn} since ${formatTimestamp(collaborator.status.since)} UTC.`
+                  {waitingStatus
+                    ? `Waiting on ${waitingStatus.waitingOn} since ${formatTimestamp(waitingStatus.since)} UTC.`
                     : "Active in the current review window."}
                 </p>
               </div>

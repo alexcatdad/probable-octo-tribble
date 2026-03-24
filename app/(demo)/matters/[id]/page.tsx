@@ -46,13 +46,16 @@ export default async function MatterOverviewPage({
         pendingDecisionCount={pendingDecisionCount}
       />
 
-      <section className="grid gap-5 xl:grid-cols-[minmax(0,1.55fr)_minmax(320px,0.9fr)]">
-        <div className="space-y-5">
+      <section className="grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(295px,0.92fr)] lg:items-start">
+        <div className="lg:col-span-2">
           <DocumentStatusCard
             document={seedMatter.document}
             summary={seedReviewState.summary}
             reviewHref={`/matters/${seedMatter.id}/review`}
           />
+        </div>
+
+        <div className="space-y-5">
           <ActivityFeed activity={seedReviewState.activity} />
         </div>
 
