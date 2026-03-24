@@ -42,6 +42,17 @@ export const seedCollaborators: Collaborator[] = [
 
 export const seedAgentRuns: AgentRun[] = [
   {
+    id: "agent-run-0",
+    name: "Vendor MSA intake scan",
+    startedAt: "2026-03-24T07:54:00.000Z",
+    status: {
+      kind: "completed",
+      completedAt: "2026-03-24T08:01:00.000Z",
+      outputSummary:
+        "Baseline structure, clause map, and risk themes were captured for the review queue.",
+    },
+  },
+  {
     id: "agent-run-1",
     name: "Vendor MSA sweep v2",
     startedAt: "2026-03-24T08:02:00.000Z",
