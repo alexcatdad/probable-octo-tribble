@@ -20,7 +20,7 @@ const newsreader = Newsreader({
 
 export const metadata: Metadata = {
   title: "Matter demo",
-  description: "A legaltech frontend scaffold for the future matter workspace.",
+  description: "A legaltech demo for reviewing matters, triaging clauses, and preparing partner sign-off.",
 };
 
 export default function RootLayout({

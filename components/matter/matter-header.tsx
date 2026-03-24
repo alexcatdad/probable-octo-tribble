@@ -2,7 +2,7 @@ import type { Matter, MatterStage } from "@/lib/types/legal-demo";
 
 const stageLabelMap: Record<MatterStage, string> = {
   intake: "Intake",
-  review: "AI review in progress",
+  review: "Human review underway",
   partner_signoff: "Partner sign-off",
   ready_for_signature: "Ready for signature",
 };
@@ -48,9 +48,9 @@ export function MatterHeader({
             </h1>
             <p className="max-w-2xl text-sm leading-6 text-slate-600 sm:text-[0.95rem]">
               {matter.clientName} negotiating against {matter.counterpartyName}. The
-              overview keeps the document queue, current reviewers, and recent
-              machine-assisted work in one calm surface before entering clause
-              review.
+              overview keeps the document queue, live review activity, and
+              partner-ready context in one calm surface while the team works
+              toward sign-off.
             </p>
           </div>
         </div>

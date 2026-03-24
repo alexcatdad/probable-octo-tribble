@@ -20,9 +20,9 @@ export default function Home() {
                 Matter workflow control, without the noise.
               </h1>
               <p className="max-w-xl text-base leading-7 text-slate-600 sm:text-lg">
-                A focused shell for reviewing matters, organizing intake, and
-                setting up the future workspace flow. The demo starts at the
-                overview route.
+                A polished legal review demo for matter intake, clause triage,
+                and partner-ready handoff. Start in the live matter overview and
+                move straight into the review workspace.
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
@@ -33,7 +33,7 @@ export default function Home() {
                 Open demo
               </Link>
               <span className="text-sm text-slate-500">
-                Built for the future matter overview route.
+                Starts in the active Acme v. OmniCore matter.
               </span>
             </div>
           </div>
