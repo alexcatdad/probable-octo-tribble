@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Undo2 } from "lucide-react";
 
 const UNDO_TIMEOUT_MS = 6000;
@@ -20,24 +20,19 @@ export function UndoToast({
   onUndo,
   onDismiss,
 }: UndoToastProps) {
-  const [visible, setVisible] = useState(false);
-
   useEffect(() => {
     if (!findingId) {
-      setVisible(false);
       return;
     }
 
-    setVisible(true);
     const timeout = setTimeout(() => {
-      setVisible(false);
       onDismiss();
     }, UNDO_TIMEOUT_MS);
 
     return () => clearTimeout(timeout);
   }, [findingId, onDismiss]);
 
-  if (!findingId || !visible) {
+  if (!findingId) {
     return null;
   }
 
@@ -57,7 +52,6 @@ export function UndoToast({
           type="button"
           onClick={() => {
             onUndo(findingId);
-            setVisible(false);
           }}
           className="calm-transition inline-flex items-center gap-1.5 rounded-full bg-[var(--foreground)] px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--background)] hover:shadow-[0_12px_24px_-16px_rgba(58,39,17,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-bronze)]"
         >
