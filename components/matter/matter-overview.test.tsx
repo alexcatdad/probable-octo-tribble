@@ -26,14 +26,14 @@ it("renders the matter overview route with the primary review context", async ()
     screen.getByRole("heading", { name: /vendor msa v3/i })
   ).toBeInTheDocument();
   expect(
-    screen.getByRole("link", { name: /open review workspace/i })
+    screen.getByRole("link", { name: /continue review/i })
   ).toHaveAttribute("href", "/matters/matter-acme-v-omnicore/review");
   expect(screen.getByText(/human review underway/i)).toBeInTheDocument();
   expect(screen.getByText(/^completed$/i)).toBeInTheDocument();
   expect(screen.getByText(/^needs human review$/i)).toBeInTheDocument();
   expect(screen.getByText(/^superseded$/i)).toBeInTheDocument();
   expect(
-    screen.getByText(/the review queue is ready for clause-by-clause decisions/i)
+    screen.getByText(/partner guidance still needed on the open indemnity and liability calls/i)
   ).toBeInTheDocument();
 });
 

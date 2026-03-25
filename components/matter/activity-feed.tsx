@@ -10,14 +10,10 @@ export function ActivityFeed({ className, activity }: ActivityFeedProps) {
   const recentActivity = [...activity].reverse().slice(0, 4);
 
   return (
-    <section className={cn("glass-tile rounded-2xl px-6 py-5", className)}>
+    <section className={cn("glass-tile rounded-2xl px-[var(--tile-inset)] py-5", className)}>
       <div className="mb-4">
-        <p className="section-kicker">
-          Recent activity
-        </p>
-        <h2 className="mt-2 text-xl font-semibold tracking-[-0.04em]">
-          Matter timeline
-        </h2>
+        <p className="section-kicker">Recent movement</p>
+        <h2 className="mt-2 text-xl font-semibold tracking-[-0.04em]">Matter timeline</h2>
       </div>
 
       <ol className="space-y-3">
@@ -29,7 +25,7 @@ export function ActivityFeed({ className, activity }: ActivityFeedProps) {
                 {formatTimestamp(event.occurredAt)}
               </p>
             </div>
-            <div className="rounded-xl border border-[var(--glass-border)] bg-[var(--glass-1)] px-4 py-3">
+            <div className="rounded-[1.3rem] border border-[var(--glass-border)] bg-[rgba(255,255,255,0.5)] px-4 py-3">
               <p className="text-sm leading-6 text-[var(--muted-foreground)]">{event.message}</p>
             </div>
           </li>

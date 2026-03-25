@@ -12,19 +12,19 @@ const issueItems = [
     key: "flaggedClauseCount",
     label: "Flagged clauses",
     tone: "border-[var(--tone-danger-border)] bg-[var(--tone-danger)] text-[var(--tone-danger-text)]",
-    note: "Passages identified by automated analysis requiring legal judgment.",
+    note: "Still need legal judgment.",
   },
   {
     key: "unresolvedCommentCount",
     label: "Unresolved comments",
     tone: "border-[var(--tone-warning-border)] bg-[var(--tone-warning)] text-[var(--tone-warning-text)]",
-    note: "Open internal notes still waiting on response.",
+    note: "Still waiting on response.",
   },
   {
     key: "pendingDecisionCount",
     label: "Pending decisions",
     tone: "border-[var(--tone-info-border)] bg-[var(--tone-info)] text-[var(--tone-info-text)]",
-    note: "Findings that have not been accepted, rejected, or deferred.",
+    note: "Not yet accepted, rejected, or deferred.",
   },
 ] as const;
 
@@ -44,11 +44,9 @@ export function OpenIssuesStrip({
     <section className={cn("glass-tile overflow-hidden rounded-2xl px-6 py-5", className)}>
       <div className="mb-3 flex items-center justify-between gap-4">
         <div>
-          <p className="section-kicker">
-            Open issues
-          </p>
+          <p className="section-kicker">Needs attention now</p>
           <p className="mt-1 text-sm text-[var(--muted-foreground)]">
-            A quick read on what still blocks this matter from moving forward.
+            The shortest read on what still blocks sign-off.
           </p>
         </div>
       </div>
@@ -57,12 +55,12 @@ export function OpenIssuesStrip({
         {issueItems.map((item) => (
           <article
             key={item.key}
-            className={`calm-transition rounded-xl border px-4 py-4 ${item.tone}`}
+            className={`calm-transition rounded-[1.4rem] border px-4 py-4 ${item.tone}`}
           >
             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em]">
               {item.label}
             </p>
-            <p className="mt-2 font-heading text-[2.4rem] leading-none tracking-[-0.05em] text-[var(--foreground)]">
+            <p className="mt-3 font-heading text-[2.6rem] leading-none tracking-[-0.05em] text-[var(--foreground)]">
               {values[item.key]}
             </p>
             <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">{item.note}</p>

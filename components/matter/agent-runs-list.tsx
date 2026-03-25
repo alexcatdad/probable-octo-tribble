@@ -47,7 +47,7 @@ export function AgentRunsList({ className, agentRuns, collaborators }: AgentRuns
   );
 
   return (
-    <section className={cn("glass-tile rounded-2xl px-6 py-5", className)}>
+    <section className={cn("glass-tile rounded-2xl px-[var(--tile-inset)] py-5", className)}>
       <div className="mb-4">
         <p className="section-kicker">Agent runs</p>
         <h2 className="mt-2 font-heading text-[1.85rem] leading-none tracking-[-0.05em]">
@@ -61,7 +61,7 @@ export function AgentRunsList({ className, agentRuns, collaborators }: AgentRuns
           return (
             <article
               key={run.id}
-              className="calm-transition rounded-xl border border-[var(--glass-border)] bg-[var(--glass-1)] px-4 py-4"
+              className="calm-transition rounded-[1.3rem] border border-[var(--glass-border)] bg-[rgba(255,255,255,0.5)] px-4 py-4"
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>

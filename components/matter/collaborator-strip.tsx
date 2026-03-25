@@ -8,12 +8,10 @@ interface CollaboratorStripProps {
 
 export function CollaboratorStrip({ className, collaborators }: CollaboratorStripProps) {
   return (
-    <section className={cn("glass-tile-strong rounded-2xl px-6 py-5", className)}>
+    <section className={cn("glass-tile-strong rounded-2xl px-[var(--tile-inset)] py-5", className)}>
       <div className="mb-4">
         <p className="section-kicker">Matter coverage</p>
-        <h2 className="mt-2 text-xl font-semibold tracking-[-0.04em]">
-          Collaborators
-        </h2>
+        <h2 className="mt-2 text-xl font-semibold tracking-[-0.04em]">Collaborators</h2>
       </div>
 
       <div className="space-y-3">
@@ -23,12 +21,12 @@ export function CollaboratorStrip({ className, collaborators }: CollaboratorStri
           return (
             <article
               key={collaborator.id}
-              className="flex items-start gap-3 rounded-xl border border-[var(--glass-border)] bg-[var(--glass-1)] px-4 py-4"
+              className="flex items-start gap-3 rounded-[1.3rem] border border-[var(--glass-border)] bg-[rgba(255,255,255,0.52)] px-4 py-4"
             >
-              <div className="relative flex size-11 shrink-0 items-center justify-center rounded-full bg-[var(--glass-3)] text-sm font-semibold">
+              <div className="relative flex size-11 shrink-0 items-center justify-center rounded-full bg-[rgba(255,255,255,0.8)] text-sm font-semibold">
                 {collaborator.initials}
                 <span
-                  className={`absolute right-0 top-0 flex size-3.5 items-center justify-center rounded-full border-2 border-[#0c1017] text-[6px] font-bold ${
+                  className={`absolute right-0 top-0 flex size-3.5 items-center justify-center rounded-full border-2 border-[#fffaf4] text-[6px] font-bold ${
                     waitingStatus
                       ? "bg-amber-400 text-amber-950"
                       : "bg-emerald-400 text-emerald-950"

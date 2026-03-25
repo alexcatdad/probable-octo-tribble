@@ -48,18 +48,18 @@ export function MatterOverviewShell({
         latestActivityAt={latestActivityAt}
       />
 
-      <OpenIssuesStrip
-        className="col-span-12"
-        flaggedClauseCount={flaggedClauseCount}
-        unresolvedCommentCount={reviewState.summary.unresolvedCommentCount}
-        pendingDecisionCount={pendingDecisionCount}
-      />
-
       <DocumentStatusCard
         className="col-span-12"
         document={matter.document}
         summary={reviewState.summary}
         reviewHref={`/matters/${matter.id}/review`}
+      />
+
+      <OpenIssuesStrip
+        className="col-span-12"
+        flaggedClauseCount={flaggedClauseCount}
+        unresolvedCommentCount={reviewState.summary.unresolvedCommentCount}
+        pendingDecisionCount={pendingDecisionCount}
       />
 
       <ActivityFeed
