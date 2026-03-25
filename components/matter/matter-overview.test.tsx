@@ -118,6 +118,6 @@ it("renders generic demo shell chrome for nested demo routes", () => {
     </DemoLayout>
   );
 
-  expect(screen.getByText(/demo workspace/i)).toBeInTheDocument();
+  expect(screen.getByText(/sample workspace/i)).toBeInTheDocument();
   expect(screen.queryByText(/matter overview/i)).not.toBeInTheDocument();
 });

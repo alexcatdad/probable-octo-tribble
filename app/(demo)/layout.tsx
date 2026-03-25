@@ -11,7 +11,7 @@ export default function DemoLayout({
       {/* Single grid: header + content share the same 12 columns */}
       <div className="page-grid mx-auto w-full max-w-7xl">
         {/* Header spans the full grid row */}
-        <header className="col-span-12 flex items-center justify-between border-b border-[var(--glass-border)] px-6 pb-4">
+        <header className="col-span-12 flex flex-wrap items-center justify-between gap-4 rounded-[1.8rem] border border-[var(--glass-border)] bg-[rgba(255,252,248,0.78)] px-[var(--tile-inset)] py-4 shadow-[0_16px_46px_-34px_rgba(58,39,17,0.26)]">
           <nav aria-label="Primary navigation" className="flex items-center gap-4">
             <Link
               href="/"
@@ -21,19 +21,19 @@ export default function DemoLayout({
             </Link>
             <span className="text-[var(--muted-foreground)]">/</span>
             <span className="text-[0.72rem] font-medium uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-              Demo workspace
+              Sample workspace
             </span>
           </nav>
           <div className="flex items-center gap-3">
-            <span className="rounded-full border border-[var(--tone-warning-border)] bg-[var(--tone-warning)] px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[var(--tone-warning-text)]">
-              Prototype
+            <span className="rounded-full border border-[var(--glass-border)] bg-[rgba(184,142,93,0.08)] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[var(--tone-warning-text)]">
+              Editorial sample
             </span>
           </div>
         </header>
 
         {/* Content inherits the same grid columns via display:contents */}
         <ViewTransition>
-          <main id="main-content" className="col-span-12 grid grid-cols-subgrid gap-y-5 pb-10">
+          <main id="main-content" className="col-span-12 grid grid-cols-subgrid gap-y-5 pb-10 pt-1">
             {children}
           </main>
         </ViewTransition>
