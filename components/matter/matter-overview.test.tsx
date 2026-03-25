@@ -64,7 +64,7 @@ it("falls back to the seeded review state when the persisted snapshot is malform
     await screen.findByText(/0 of 4 decisions recorded/i)
   ).toBeInTheDocument();
   expect(
-    screen.getByText(/4 findings are still waiting for a decision/i)
+    screen.getByText(/4 findings still waiting for a decision/i)
   ).toBeInTheDocument();
 });
 

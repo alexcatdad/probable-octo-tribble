@@ -1,7 +1,9 @@
 import { CheckCheck, Clock3, X } from "lucide-react";
 import type { Finding } from "@/lib/types/legal-demo";
+import { cn } from "@/lib/utils";
 
 interface SuggestedEditCardProps {
+  className?: string;
   finding?: Finding;
   clauseLabel?: string;
   onAcceptSuggestion: (findingId: string) => void;
@@ -10,6 +12,7 @@ interface SuggestedEditCardProps {
 }
 
 export function SuggestedEditCard({
+  className,
   finding,
   clauseLabel,
   onAcceptSuggestion,
@@ -18,84 +21,67 @@ export function SuggestedEditCard({
 }: SuggestedEditCardProps) {
   const decisionPresentation =
     finding?.decision.kind === "accepted"
-      ? {
-          label: "Accepted",
-          tone:
-            "border-[rgba(86,114,94,0.24)] bg-[rgba(86,114,94,0.12)] text-emerald-950",
-        }
+      ? { label: "Accepted", tone: "border-[var(--tone-success-border)] bg-[var(--tone-success)] text-[var(--tone-success-text)]" }
       : finding?.decision.kind === "rejected"
-        ? {
-            label: "Rejected",
-            tone:
-              "border-[rgba(166,100,97,0.22)] bg-[rgba(166,100,97,0.12)] text-rose-950",
-          }
+        ? { label: "Rejected", tone: "border-[var(--tone-danger-border)] bg-[var(--tone-danger)] text-[var(--tone-danger-text)]" }
         : finding?.decision.kind === "needs_follow_up"
-          ? {
-              label: "Needs follow-up",
-              tone:
-                "border-[rgba(63,83,115,0.18)] bg-[rgba(63,83,115,0.1)] text-slate-950",
-            }
-          : {
-              label: "Pending decision",
-              tone:
-                "border-[rgba(157,115,74,0.22)] bg-[rgba(157,115,74,0.1)] text-amber-950",
-            };
+          ? { label: "Needs follow-up", tone: "border-[var(--tone-neutral-border)] bg-[var(--tone-neutral)] text-[var(--muted-foreground)]" }
+          : { label: "Pending decision", tone: "border-[var(--tone-warning-border)] bg-[var(--tone-warning)] text-[var(--tone-warning-text)]" };
 
   if (!finding) {
     return (
-      <section className="panel-surface rounded-[1.6rem] border border-slate-900/10 px-5 py-5 text-slate-600">
+      <section className={cn("glass-tile rounded-2xl px-6 py-5 text-[var(--muted-foreground)]", className)}>
         Select a finding to inspect the current language and proposed text.
       </section>
     );
   }
 
   return (
-    <section className="panel-surface rounded-[1.6rem] border border-slate-900/10 px-5 py-5">
+    <section aria-label="Suggested edit" className={cn("glass-tile rounded-2xl px-6 py-5", className)}>
       <div className="mb-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="section-kicker">
-            Suggested edit
-          </p>
+          <p className="section-kicker">Suggested edit</p>
           <span
+            aria-live="polite"
             className={`calm-transition rounded-full border px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] ${decisionPresentation.tone}`}
           >
             {decisionPresentation.label}
           </span>
         </div>
-        <h2 className="mt-3 font-heading text-[1.85rem] leading-none tracking-[-0.05em] text-slate-950">
+        <h2 className="mt-3 font-heading text-[1.85rem] leading-none tracking-[-0.05em]">
           {finding.suggestedEdit.summary}
         </h2>
-        <p className="mt-2 text-sm leading-6 text-slate-600">
-          {clauseLabel}. The recommendation stays reversible while the source and
-          proposed language remain side by side.
+        <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">
+          {clauseLabel}. This recommendation remains reversible while the source
+          and proposed language are presented side by side.
         </p>
       </div>
 
       <div className="grid gap-3">
-        <article className="calm-transition rounded-[1.25rem] border border-[rgba(166,100,97,0.22)] bg-[rgba(166,100,97,0.08)] px-4 py-4">
-          <p className="text-[0.64rem] font-semibold uppercase tracking-[0.16em] text-rose-900">
+        <article className="calm-transition rounded-xl border border-[var(--tone-danger-border)] bg-[var(--tone-danger)] px-4 py-4">
+          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[var(--tone-danger-text)]">
             Current text
           </p>
-          <p className="mt-3 text-sm leading-6 text-rose-950">
+          <p className="mt-3 text-sm leading-6 text-[var(--tone-danger-text)]">
             {finding.suggestedEdit.beforeText}
           </p>
         </article>
 
-        <article className="calm-transition rounded-[1.25rem] border border-[rgba(86,114,94,0.24)] bg-[rgba(86,114,94,0.1)] px-4 py-4">
-          <p className="text-[0.64rem] font-semibold uppercase tracking-[0.16em] text-emerald-900">
+        <article className="calm-transition rounded-xl border border-[var(--tone-success-border)] bg-[var(--tone-success)] px-4 py-4">
+          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[var(--tone-success-text)]">
             Proposed text
           </p>
-          <p className="mt-3 text-sm leading-6 text-emerald-950">
+          <p className="mt-3 text-sm leading-6 text-[var(--tone-success-text)]">
             {finding.suggestedEdit.afterText}
           </p>
         </article>
       </div>
 
-      <div className="mt-4 rounded-[1.2rem] border border-slate-900/10 bg-[rgba(255,255,255,0.68)] px-4 py-4">
-        <p className="text-[0.64rem] font-semibold uppercase tracking-[0.16em] text-slate-500">
+      <div className="mt-4 rounded-xl border border-[var(--glass-border)] bg-[var(--glass-1)] px-4 py-4">
+        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
           Reviewer rationale
         </p>
-        <p className="mt-2 text-sm leading-6 text-slate-700">
+        <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">
           {finding.suggestedEdit.rationale}
         </p>
       </div>
@@ -104,26 +90,26 @@ export function SuggestedEditCard({
         <button
           type="button"
           onClick={() => onAcceptSuggestion(finding.id)}
-          className="calm-transition calm-hover-lift inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-slate-950 px-4 text-sm font-medium text-white shadow-[0_16px_34px_-24px_rgba(23,32,51,0.72)] hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+          className="calm-transition calm-hover-lift inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-white px-4 text-sm font-semibold text-[#0c1017] shadow-[0_0_24px_-8px_rgba(201,149,106,0.3)] hover:shadow-[0_0_32px_-6px_rgba(201,149,106,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-bronze)]"
         >
           <CheckCheck className="size-4" />
-          Accept suggestion
+          Accept
         </button>
         <button
           type="button"
           onClick={() => onRejectSuggestion(finding.id)}
-          className="calm-transition inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[rgba(166,100,97,0.24)] bg-[rgba(166,100,97,0.08)] px-4 text-sm font-medium text-rose-950 hover:bg-[rgba(166,100,97,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400"
+          className="calm-transition inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[var(--tone-danger-border)] bg-[var(--tone-danger)] px-4 text-sm font-medium text-[var(--tone-danger-text)] hover:bg-[rgba(224,94,94,0.2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--destructive)]"
         >
           <X className="size-4" />
-          Reject suggestion
+          Reject
         </button>
         <button
           type="button"
           onClick={() => onMarkNeedsFollowUp(finding.id)}
-          className="calm-transition inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[rgba(63,83,115,0.16)] bg-white/80 px-4 text-sm font-medium text-slate-800 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+          className="calm-transition inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[var(--glass-border-hover)] bg-[var(--glass-3)] px-4 text-sm font-medium hover:bg-[var(--glass-3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-bronze)]"
         >
           <Clock3 className="size-4" />
-          Needs follow-up
+          Follow-up
         </button>
       </div>
     </section>

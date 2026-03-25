@@ -3,47 +3,32 @@ import type {
   AgentRunStatus,
   Collaborator,
 } from "@/lib/types/legal-demo";
-
-function formatTimestamp(timestamp: string) {
-  return new Intl.DateTimeFormat("en", {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: false,
-    timeZone: "UTC",
-  }).format(new Date(timestamp));
-}
+import { cn, formatTimestamp } from "@/lib/utils";
 
 function statusCopy(
   status: AgentRunStatus,
   collaborators: Collaborator[]
-): {
-  label: string;
-  tone: string;
-  detail: string;
-} {
+): { label: string; tone: string; detail: string } {
   switch (status.kind) {
     case "completed":
       return {
         label: "completed",
-        tone: "bg-emerald-50 text-emerald-900 border-emerald-200/80",
+        tone: "border-[var(--tone-success-border)] bg-[var(--tone-success)] text-[var(--tone-success-text)]",
         detail: status.outputSummary,
       };
     case "superseded":
       return {
         label: "superseded",
-        tone: "bg-stone-100 text-stone-800 border-stone-200/80",
+        tone: "border-[var(--tone-neutral-border)] bg-[var(--tone-neutral)] text-[var(--muted-foreground)]",
         detail: status.reason,
       };
     case "needs_human_review": {
       const requestedBy =
         collaborators.find((person) => person.id === status.requestedBy)?.name ??
         "Reviewer";
-
       return {
         label: "needs human review",
-        tone: "bg-amber-50 text-amber-900 border-amber-200/80",
+        tone: "border-[var(--tone-warning-border)] bg-[var(--tone-warning)] text-[var(--tone-warning-text)]",
         detail: `${requestedBy}: ${status.note}`,
       };
     }
@@ -51,45 +36,40 @@ function statusCopy(
 }
 
 interface AgentRunsListProps {
+  className?: string;
   agentRuns: AgentRun[];
   collaborators: Collaborator[];
 }
 
-export function AgentRunsList({
-  agentRuns,
-  collaborators,
-}: AgentRunsListProps) {
+export function AgentRunsList({ className, agentRuns, collaborators }: AgentRunsListProps) {
   const orderedRuns = [...agentRuns].sort(
     (left, right) => Date.parse(right.startedAt) - Date.parse(left.startedAt)
   );
 
   return (
-    <section className="panel-surface rounded-[1.6rem] border border-slate-900/10 px-5 py-5">
+    <section className={cn("glass-tile rounded-2xl px-6 py-5", className)}>
       <div className="mb-4">
-        <p className="section-kicker">
-          Agent runs
-        </p>
-        <h2 className="mt-2 font-heading text-[1.85rem] leading-none tracking-[-0.05em] text-slate-950">
-          Recent machine passes
+        <p className="section-kicker">Agent runs</p>
+        <h2 className="mt-2 font-heading text-[1.85rem] leading-none tracking-[-0.05em]">
+          Recent automated passes
         </h2>
       </div>
 
       <div className="space-y-3">
         {orderedRuns.map((run) => {
           const presentation = statusCopy(run.status, collaborators);
-
           return (
             <article
               key={run.id}
-              className="calm-transition rounded-[1.25rem] border border-slate-900/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,rgba(247,244,238,0.9)_100%)] px-4 py-4"
+              className="calm-transition rounded-xl border border-[var(--glass-border)] bg-[var(--glass-1)] px-4 py-4"
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <h3 className="font-heading text-[1.3rem] leading-none tracking-[-0.04em] text-slate-950">
+                  <h3 className="font-heading text-[1.2rem] leading-none tracking-[-0.04em]">
                     {run.name}
                   </h3>
-                  <p className="mt-1 text-xs text-slate-500">
-                    Started {formatTimestamp(run.startedAt)} UTC
+                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                    Started {formatTimestamp(run.startedAt)}
                   </p>
                 </div>
                 <span
@@ -98,7 +78,7 @@ export function AgentRunsList({
                   {presentation.label}
                 </span>
               </div>
-              <p className="mt-3 text-sm leading-6 text-slate-600">
+              <p className="mt-3 text-sm leading-6 text-[var(--muted-foreground)]">
                 {presentation.detail}
               </p>
             </article>

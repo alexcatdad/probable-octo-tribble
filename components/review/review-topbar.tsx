@@ -1,23 +1,13 @@
 import Link from "next/link";
 import type { AgentRun, Matter, ReviewSummary } from "@/lib/types/legal-demo";
-
-function formatTimestamp(timestamp: string) {
-  return new Intl.DateTimeFormat("en", {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: false,
-    timeZone: "UTC",
-  }).format(new Date(timestamp));
-}
+import { cn, formatTimestamp } from "@/lib/utils";
 
 function describeActiveRun(run?: AgentRun) {
   if (!run) {
     return {
       label: "No active run",
-      detail: "No machine pass is currently attached to this workspace.",
-      tone: "border-slate-700/70 bg-slate-900/50 text-slate-100",
+      detail: "No automated pass is currently attached to this workspace.",
+      tone: "border-[var(--tone-neutral-border)] bg-[var(--tone-neutral)] text-[var(--muted-foreground)]",
     };
   }
 
@@ -26,24 +16,25 @@ function describeActiveRun(run?: AgentRun) {
       return {
         label: "Needs human review",
         detail: run.status.note,
-        tone: "border-amber-200/80 bg-amber-50 text-amber-950",
+        tone: "border-[var(--tone-warning-border)] bg-[var(--tone-warning)] text-[var(--tone-warning-text)]",
       };
     case "superseded":
       return {
         label: "Superseded",
         detail: run.status.reason,
-        tone: "border-stone-200/80 bg-stone-100 text-stone-900",
+        tone: "border-[var(--tone-neutral-border)] bg-[var(--tone-neutral)] text-[var(--muted-foreground)]",
       };
     case "completed":
       return {
         label: "Completed",
         detail: run.status.outputSummary,
-        tone: "border-emerald-200/80 bg-emerald-50 text-emerald-950",
+        tone: "border-[var(--tone-success-border)] bg-[var(--tone-success)] text-[var(--tone-success-text)]",
       };
   }
 }
 
 interface ReviewTopbarProps {
+  className?: string;
   matter: Matter;
   activeRun?: AgentRun;
   summary: ReviewSummary;
@@ -53,6 +44,7 @@ interface ReviewTopbarProps {
 }
 
 export function ReviewTopbar({
+  className,
   matter,
   activeRun,
   summary,
@@ -63,22 +55,22 @@ export function ReviewTopbar({
   const runPresentation = describeActiveRun(activeRun);
 
   return (
-    <section className="overflow-hidden rounded-[1.8rem] border border-slate-900/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.97)_0%,rgba(247,243,235,0.96)_58%,rgba(235,229,219,0.98)_100%)] shadow-[0_28px_80px_-58px_rgba(23,32,51,0.6)]">
-      <div className="grid gap-6 px-6 py-6 sm:px-7 lg:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)] lg:items-start">
+    <section className={cn("glass-tile overflow-hidden rounded-2xl", className)}>
+      <div className="grid gap-6 px-6 py-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)] lg:items-start">
         <div className="space-y-5">
-          <div className="flex flex-wrap items-center gap-3 text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-slate-500">
-            <Link href={`/matters/${matter.id}`} className="hover:text-slate-950">
+          <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-3 text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-[var(--muted-foreground)]">
+            <Link href={`/matters/${matter.id}`} className="hover:text-[var(--foreground)]">
               Matter
             </Link>
-            <span className="text-slate-300">/</span>
+            <span aria-hidden="true" className="opacity-30">/</span>
             <span>{matter.title}</span>
-            <span className="text-slate-300">/</span>
-            <span className="text-slate-900">Review workspace</span>
-          </div>
+            <span aria-hidden="true" className="opacity-30">/</span>
+            <span className="text-[var(--foreground)]">Review workspace</span>
+          </nav>
 
           <div className="space-y-3">
             <div className="flex flex-wrap items-center gap-3">
-              <span className="rounded-full border border-slate-900/10 bg-white/85 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-600">
+              <span className="rounded-full border border-[var(--glass-border-hover)] bg-[var(--glass-3)] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--muted-foreground)]">
                 Contract review
               </span>
               <span
@@ -89,53 +81,46 @@ export function ReviewTopbar({
             </div>
 
             <div>
-              <h1 className="text-3xl font-semibold tracking-[-0.05em] text-slate-950 sm:text-[2.55rem]">
+              <h1
+                className="text-3xl font-semibold tracking-[-0.05em] sm:text-[2.55rem]"
+                style={{ viewTransitionName: "document-title" }}
+              >
                 {matter.document.title}
               </h1>
-              <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600 sm:text-[0.95rem]">
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-[var(--muted-foreground)] sm:text-[0.95rem]">
                 Version {matter.document.version} is under clause-by-clause review
-                for {matter.clientName}. Machine findings stay visible, cited, and
-                reversible until partner sign-off.
+                for {matter.clientName}. All automated findings remain visible, cited,
+                and fully reversible until partner sign-off.
               </p>
             </div>
           </div>
 
           <div className="grid gap-3 sm:grid-cols-3">
-            <div className="rounded-[1.2rem] border border-slate-900/10 bg-white/80 px-4 py-4">
-              <p className="text-[0.68rem] uppercase tracking-[0.2em] text-slate-500">
-                Review progress
-              </p>
-              <p className="mt-2 text-lg font-semibold tracking-[-0.04em] text-slate-950">
-                {reviewProgressLabel}
-              </p>
-            </div>
-            <div className="rounded-[1.2rem] border border-slate-900/10 bg-white/80 px-4 py-4">
-              <p className="text-[0.68rem] uppercase tracking-[0.2em] text-slate-500">
-                Pending findings
-              </p>
-              <p className="mt-2 text-lg font-semibold tracking-[-0.04em] text-slate-950">
-                {pendingDecisionCount}
-              </p>
-            </div>
-            <div className="rounded-[1.2rem] border border-slate-900/10 bg-white/80 px-4 py-4">
-              <p className="text-[0.68rem] uppercase tracking-[0.2em] text-slate-500">
-                Open comments
-              </p>
-              <p className="mt-2 text-lg font-semibold tracking-[-0.04em] text-slate-950">
-                {summary.unresolvedCommentCount}
-              </p>
-            </div>
+            {[
+              { label: "Review progress", value: reviewProgressLabel },
+              { label: "Pending findings", value: pendingDecisionCount },
+              { label: "Open comments", value: summary.unresolvedCommentCount },
+            ].map((stat) => (
+              <div key={stat.label} className="rounded-xl border border-[var(--glass-border)] bg-[var(--glass-1)] px-4 py-4">
+                <p className="text-[0.68rem] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+                  {stat.label}
+                </p>
+                <p className="mt-2 text-lg font-semibold tracking-[-0.04em]">
+                  {stat.value}
+                </p>
+              </div>
+            ))}
           </div>
 
-          <div className="rounded-[1.2rem] border border-slate-900/10 bg-white/82 px-4 py-4">
+          <div className="rounded-xl border border-[var(--glass-border)] bg-[var(--glass-1)] px-4 py-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <p className="text-[0.68rem] uppercase tracking-[0.2em] text-slate-500">
+                <p className="text-[0.68rem] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
                   Active reviewers
                 </p>
-                <p className="mt-2 text-sm leading-6 text-slate-600">
-                  The workspace keeps partner, associate, and reviewer state visible
-                  while triage moves.
+                <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">
+                  Partner, associate, and reviewer status remains visible throughout
+                  the triage process.
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -144,33 +129,36 @@ export function ReviewTopbar({
                     collaborator.status.kind === "waiting"
                       ? collaborator.status
                       : null;
-
                   return (
                     <article
                       key={collaborator.id}
-                      className="min-w-[180px] rounded-[1rem] border border-slate-900/10 bg-[rgba(255,255,255,0.78)] px-3 py-3"
+                      className="min-w-[180px] rounded-xl border border-[var(--glass-border)] bg-[var(--glass-2)] px-3 py-3"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="relative flex size-10 shrink-0 items-center justify-center rounded-full bg-slate-950 text-xs font-semibold text-white">
+                        <div className="relative flex size-10 shrink-0 items-center justify-center rounded-full bg-[var(--glass-3)] text-xs font-semibold">
                           {collaborator.initials}
                           <span
-                            className={`absolute right-0 top-0 size-3 rounded-full border-2 border-white ${
-                              waitingStatus ? "bg-amber-400" : "bg-emerald-400"
+                            className={`absolute right-0 top-0 flex size-3.5 items-center justify-center rounded-full border-2 border-[#0c1017] text-[6px] font-bold ${
+                              waitingStatus
+                                ? "bg-amber-400 text-amber-950"
+                                : "bg-emerald-400 text-emerald-950"
                             }`}
-                          />
+                            aria-label={waitingStatus ? `Waiting on ${waitingStatus.waitingOn}` : "Active"}
+                            title={waitingStatus ? `Waiting on ${waitingStatus.waitingOn}` : "Active"}
+                          >
+                            {waitingStatus ? "!" : ""}
+                          </span>
                         </div>
                         <div className="min-w-0">
-                          <p className="text-sm font-semibold text-slate-950">
-                            {collaborator.name}
-                          </p>
-                          <p className="text-[0.68rem] uppercase tracking-[0.16em] text-slate-500">
+                          <p className="text-sm font-semibold">{collaborator.name}</p>
+                          <p className="text-[0.68rem] uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
                             {collaborator.title}
                           </p>
                         </div>
                       </div>
-                      <p className="mt-3 text-xs leading-5 text-slate-600">
+                      <p className="mt-3 text-xs leading-5 text-[var(--muted-foreground)]">
                         {waitingStatus
-                          ? `Waiting on ${waitingStatus.waitingOn} since ${formatTimestamp(waitingStatus.since)} UTC.`
+                          ? `Waiting on ${waitingStatus.waitingOn} since ${formatTimestamp(waitingStatus.since)}.`
                           : "Active in the current review window."}
                       </p>
                     </article>
@@ -181,54 +169,53 @@ export function ReviewTopbar({
           </div>
         </div>
 
-        <aside className="space-y-4 rounded-[1.45rem] border border-slate-900/10 bg-slate-950 px-5 py-5 text-slate-100">
+        <aside className="glass-tile-strong space-y-4 rounded-xl px-6 py-5">
           <div>
-            <p className="text-[0.68rem] uppercase tracking-[0.2em] text-slate-400">
+            <p className="text-[0.68rem] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
               Current agent pass
             </p>
             <h2 className="mt-2 text-xl font-semibold tracking-[-0.04em]">
               {activeRun?.name ?? "No active run"}
             </h2>
-            <p className="mt-3 text-sm leading-6 text-slate-300">
+            <p className="mt-3 text-sm leading-6 text-[var(--muted-foreground)]">
               {runPresentation.detail}
             </p>
           </div>
 
-          <div className="space-y-3 border-t border-white/10 pt-4">
-            <div className="flex items-center justify-between gap-3 text-sm">
-              <span className="text-slate-400">Accepted</span>
-              <span className="font-medium text-slate-100">
-                {summary.acceptedCount}
-              </span>
-            </div>
-            <div className="flex items-center justify-between gap-3 text-sm">
-              <span className="text-slate-400">Needs follow-up</span>
-              <span className="font-medium text-slate-100">
-                {summary.needsFollowUpCount}
-              </span>
-            </div>
-            <div className="flex items-center justify-between gap-3 text-sm">
-              <span className="text-slate-400">Rejected</span>
-              <span className="font-medium text-slate-100">
-                {summary.rejectedCount}
-              </span>
-            </div>
+          <div className="space-y-2 border-t border-[var(--glass-border)] pt-4 text-sm">
+            {[
+              { label: "Accepted", value: summary.acceptedCount },
+              { label: "Needs follow-up", value: summary.needsFollowUpCount },
+              { label: "Rejected", value: summary.rejectedCount },
+            ].map((row) => (
+              <div key={row.label} className="flex items-center justify-between gap-3">
+                <span className="text-[var(--muted-foreground)]">{row.label}</span>
+                <span className="font-medium">{row.value}</span>
+              </div>
+            ))}
           </div>
 
-          <div className="space-y-3 border-t border-white/10 pt-4">
-            <div className="flex items-center justify-between gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-slate-400">
+          <div className="space-y-3 border-t border-[var(--glass-border)] pt-4">
+            <div className="flex items-center justify-between gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[var(--muted-foreground)]">
               <span>Decision coverage</span>
               <span>{progressPercent}%</span>
             </div>
-            <div className="h-2.5 overflow-hidden rounded-full bg-white/10">
+            <div
+              role="progressbar"
+              aria-valuenow={progressPercent}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label={`Decision coverage: ${progressPercent}%`}
+              className="h-2.5 overflow-hidden rounded-full bg-[var(--glass-3)]"
+            >
               <div
-                className="h-full rounded-full bg-[linear-gradient(90deg,rgba(142,182,144,0.95),rgba(194,150,106,0.95))]"
+                className="h-full rounded-full bg-[linear-gradient(90deg,var(--tone-success-text),var(--accent-bronze))]"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
-            <p className="text-xs leading-5 text-slate-400">
-              Each action keeps the source text, rationale, and clause citation in
-              view so reviewers can reverse course without losing context.
+            <p className="text-xs leading-5 text-[var(--muted-foreground)]">
+              Every decision preserves the source text, rationale, and clause citation,
+              enabling reviewers to reverse course without losing context.
             </p>
           </div>
         </aside>

@@ -4,24 +4,24 @@ import type { Finding } from "@/lib/types/legal-demo";
 function severityTone(severity: Finding["severity"]) {
   switch (severity) {
     case "high":
-      return "border-rose-200/80 bg-rose-50 text-rose-950";
+      return "border-[var(--tone-danger-border)] bg-[var(--tone-danger)] text-[var(--tone-danger-text)]";
     case "medium":
-      return "border-amber-200/80 bg-amber-50 text-amber-950";
+      return "border-[var(--tone-warning-border)] bg-[var(--tone-warning)] text-[var(--tone-warning-text)]";
     case "low":
-      return "border-sky-200/80 bg-sky-50 text-sky-950";
+      return "border-[var(--tone-info-border)] bg-[var(--tone-info)] text-[var(--tone-info-text)]";
   }
 }
 
 function decisionTone(decision: Finding["decision"]["kind"]) {
   switch (decision) {
     case "accepted":
-      return "border-emerald-200/80 bg-emerald-50 text-emerald-950";
+      return "border-[var(--tone-success-border)] bg-[var(--tone-success)] text-[var(--tone-success-text)]";
     case "rejected":
-      return "border-rose-200/80 bg-rose-50 text-rose-950";
+      return "border-[var(--tone-danger-border)] bg-[var(--tone-danger)] text-[var(--tone-danger-text)]";
     case "needs_follow_up":
-      return "border-slate-200/90 bg-slate-100 text-slate-900";
+      return "border-[var(--tone-neutral-border)] bg-[var(--tone-neutral)] text-[var(--muted-foreground)]";
     case "pending":
-      return "border-slate-700/60 bg-slate-900/40 text-slate-200";
+      return "border-[var(--tone-warning-border)] bg-[var(--tone-warning)] text-[var(--tone-warning-text)]";
   }
 }
 
@@ -60,12 +60,12 @@ export function FindingCard({
   return (
     <article
       className={cn(
-        "rounded-[1.2rem] border transition-colors",
+        "rounded-xl border transition-colors",
         isSelected
-          ? "border-amber-300/60 bg-white text-slate-950 shadow-[0_16px_40px_-30px_rgba(209,153,74,0.48)]"
+          ? "border-[var(--tone-warning-border)] bg-[var(--tone-warning)] shadow-[0_0_24px_-8px_rgba(201,149,106,0.3)]"
           : isPreviewed
-            ? "border-slate-300/80 bg-white/90 text-slate-950 shadow-[0_16px_34px_-26px_rgba(66,77,95,0.28)]"
-          : "border-white/10 bg-white/5 text-slate-100 hover:border-white/20 hover:bg-white/8",
+            ? "border-[var(--glass-border-hover)] bg-[var(--glass-3)]"
+            : "border-[var(--glass-border)] bg-[var(--glass-1)] hover:border-[var(--glass-border-hover)] hover:bg-[var(--glass-2)]",
       )}
     >
       <button
@@ -75,56 +75,30 @@ export function FindingCard({
         onMouseLeave={() => onPreviewChange(false)}
         onFocus={() => onPreviewChange(true)}
         onBlur={() => onPreviewChange(false)}
-        className="block w-full rounded-[1.2rem] px-4 py-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+        className="block w-full rounded-xl px-4 py-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-bronze)]"
       >
         <div className="flex flex-wrap items-start justify-between gap-2">
-          <span
-            className={`rounded-full border px-2.5 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.14em] ${isSelected ? severityTone(finding.severity) : "border-white/10 bg-white/10 text-slate-200"}`}
-          >
+          <span className={`rounded-full border px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.14em] ${severityTone(finding.severity)}`}>
             {finding.severity}
           </span>
-          <span
-            className={`rounded-full border px-2.5 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.14em] ${isSelected ? decisionTone(finding.decision.kind) : "border-white/10 bg-white/10 text-slate-200"}`}
-          >
+          <span className={`rounded-full border px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.14em] ${decisionTone(finding.decision.kind)}`}>
             {decisionLabel(finding.decision.kind)}
           </span>
         </div>
         {isPreviewed && previewLabel ? (
-          <p
-            className={cn(
-              "mt-3 text-[0.64rem] font-semibold uppercase tracking-[0.16em]",
-              isSelected ? "text-slate-500" : "text-slate-300",
-            )}
-          >
+          <p className="mt-3 text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
             {previewLabel}
           </p>
         ) : null}
 
         <h3 className="mt-3 text-sm font-semibold leading-6">{finding.title}</h3>
-        <p
-          className={cn(
-            "mt-2 text-xs uppercase tracking-[0.16em]",
-            isSelected ? "text-slate-500" : "text-slate-400",
-          )}
-        >
+        <p className="mt-2 text-xs uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
           {clauseLabel}
         </p>
-        <p
-          className={cn(
-            "mt-3 text-sm leading-6",
-            isSelected ? "text-slate-600" : "text-slate-300",
-          )}
-        >
+        <p className="mt-3 text-sm leading-6 text-[var(--muted-foreground)]">
           {finding.rationale}
         </p>
-        <div
-          className={cn(
-            "mt-4 rounded-[1rem] border px-3 py-3 text-xs leading-5",
-            isSelected
-              ? "border-slate-900/10 bg-slate-50 text-slate-600"
-              : "border-white/10 bg-white/5 text-slate-300",
-          )}
-        >
+        <div className="mt-4 rounded-xl border border-[var(--glass-border)] bg-[var(--glass-1)] px-3 py-3 text-xs leading-5 text-[var(--muted-foreground)]">
           <p className="font-semibold uppercase tracking-[0.16em]">Citation</p>
           <p className="mt-1">{finding.citation}</p>
         </div>

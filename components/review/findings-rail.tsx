@@ -2,6 +2,7 @@
 
 import { startTransition, useState } from "react";
 import type { ContractDocument, Finding } from "@/lib/types/legal-demo";
+import { cn, pluralise } from "@/lib/utils";
 import { FindingCard } from "./finding-card";
 import { SuggestedEditCard } from "./suggested-edit-card";
 
@@ -21,11 +22,11 @@ function clauseTitleForFinding(document: ContractDocument, finding: Finding) {
       return `${section.order}.${clause.order} ${clause.title}`;
     }
   }
-
   return finding.clauseId;
 }
 
 interface FindingsRailProps {
+  className?: string;
   document: ContractDocument;
   findings: Finding[];
   selectedFindingId: string | null;
@@ -40,6 +41,7 @@ interface FindingsRailProps {
 }
 
 export function FindingsRail({
+  className,
   document,
   findings,
   selectedFindingId,
@@ -78,43 +80,38 @@ export function FindingsRail({
   return (
     <aside
       aria-label="Findings rail"
-      className="space-y-5 min-[1180px]:sticky min-[1180px]:top-5"
+      className={cn("space-y-4 min-[1180px]:sticky min-[1180px]:top-5", className)}
     >
-      <section className="panel-surface-dark rounded-[1.6rem] border border-white/10 px-5 py-5 text-slate-100">
+      <section className="glass-tile-strong rounded-2xl px-6 py-5">
         <div className="mb-4">
-          <p className="section-kicker text-slate-400">
-            Findings rail
-          </p>
+          <p className="section-kicker">Findings rail</p>
           <div className="mt-2 flex flex-wrap items-end justify-between gap-3">
             <h2 className="font-heading text-[1.9rem] leading-none tracking-[-0.05em]">
               Review queue
             </h2>
-            <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-slate-300">
-              {filteredFindings.length} findings
+            <span className="rounded-full border border-[var(--glass-border-hover)] bg-[var(--glass-3)] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[var(--muted-foreground)]">
+              {pluralise(filteredFindings.length, "finding")}
             </span>
           </div>
-          <p className="mt-2 text-sm leading-6 text-slate-300">
-            Every machine suggestion keeps the underlying clause citation and
-            reviewer action in view.
+          <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">
+            Each automated finding retains its source citation and remains
+            fully reversible until partner sign-off.
           </p>
           <div className="mt-4 flex flex-wrap items-center gap-2">
             {queueFilters.map((filter) => {
               const isActive = activeFilter === filter.id;
-
               return (
                 <button
                   key={filter.id}
                   type="button"
                   aria-pressed={isActive}
                   onClick={() => {
-                    startTransition(() => {
-                      setActiveFilter(filter.id);
-                    });
+                    startTransition(() => setActiveFilter(filter.id));
                   }}
-                  className={`calm-transition rounded-full border px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 ${
+                  className={`calm-transition rounded-full border px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-bronze)] ${
                     isActive
-                      ? "border-white/30 bg-white text-slate-950"
-                      : "border-white/10 bg-white/[0.05] text-slate-300 hover:bg-white/[0.12]"
+                      ? "border-white/20 bg-white text-[#0c1017]"
+                      : "border-[var(--glass-border)] bg-[var(--glass-1)] text-[var(--muted-foreground)] hover:bg-[var(--glass-2)]"
                   }`}
                 >
                   {filter.label}
@@ -124,14 +121,11 @@ export function FindingsRail({
             <button
               type="button"
               onClick={() => {
-                if (!jumpTargetFinding) {
-                  return;
-                }
-
+                if (!jumpTargetFinding) return;
                 onSelectFinding(jumpTargetFinding.id);
               }}
               disabled={!jumpTargetFinding}
-              className="calm-transition rounded-full border border-[rgba(194,150,106,0.28)] bg-[rgba(194,150,106,0.14)] px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-amber-100 hover:bg-[rgba(194,150,106,0.2)] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+              className="calm-transition rounded-full border border-[var(--tone-warning-border)] bg-[var(--tone-warning)] px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[var(--tone-warning-text)] hover:bg-[rgba(201,149,106,0.2)] disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-bronze)]"
             >
               Next unreviewed
             </button>
@@ -159,7 +153,7 @@ export function FindingsRail({
               />
             ))
           ) : (
-            <div className="rounded-[1.2rem] border border-dashed border-white/10 bg-white/[0.03] px-4 py-4 text-sm leading-6 text-slate-400">
+            <div className="rounded-xl border border-dashed border-[var(--glass-border)] bg-[var(--glass-1)] px-4 py-4 text-sm leading-6 text-[var(--muted-foreground)]">
               No findings match this review slice yet.
             </div>
           )}

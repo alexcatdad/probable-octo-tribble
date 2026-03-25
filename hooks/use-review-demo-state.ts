@@ -574,6 +574,9 @@ export function useReviewDemoState(matter: Matter) {
         note,
       });
     },
+    revertDecision(findingId: string) {
+      dispatch({ type: "revert_finding_decision", findingId });
+    },
     addComment(clauseId: string, body: string) {
       dispatch({ type: "add_comment", clauseId, body });
     },

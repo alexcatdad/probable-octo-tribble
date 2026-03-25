@@ -26,6 +26,7 @@ export type ReviewAction =
   | { type: "accept_finding"; findingId: string }
   | { type: "reject_finding"; findingId: string; reason: string }
   | { type: "mark_needs_follow_up"; findingId: string; note: string }
+  | { type: "revert_finding_decision"; findingId: string }
   | {
       type: "update_comment_status";
       commentId: string;
@@ -279,6 +280,32 @@ export function reviewReducer(
         activity: nextActivity,
         selectedClauseId: finding.clauseId,
         selectedFindingId: finding.id,
+        summary: buildReviewSummary(Object.values(nextFindings), state.comments),
+      };
+    }
+    case "revert_finding_decision": {
+      const finding = state.findings[action.findingId];
+
+      if (!finding || finding.decision.kind === "pending") {
+        return state;
+      }
+
+      const revertedFinding = updateFindingDecision(finding, { kind: "pending" });
+      const nextFindings = {
+        ...state.findings,
+        [finding.id]: revertedFinding,
+      };
+      const nextActivity = addActivityEvent(state, {
+        kind: "finding_decision",
+        findingId: finding.id,
+        decision: "accepted",
+        message: `Reverted decision on ${finding.title.toLowerCase()} back to pending.`,
+      });
+
+      return {
+        ...state,
+        findings: nextFindings,
+        activity: nextActivity,
         summary: buildReviewSummary(Object.values(nextFindings), state.comments),
       };
     }

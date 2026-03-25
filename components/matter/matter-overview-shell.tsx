@@ -40,40 +40,40 @@ export function MatterOverviewShell({
     reviewState.activity[reviewState.activity.length - 1]?.occurredAt ?? openedAt;
 
   return (
-    <main className="space-y-6 pb-10">
+    <>
       <MatterHeader
+        className="col-span-12"
         matter={matter}
         openedAt={openedAt}
         latestActivityAt={latestActivityAt}
       />
 
       <OpenIssuesStrip
+        className="col-span-12"
         flaggedClauseCount={flaggedClauseCount}
         unresolvedCommentCount={reviewState.summary.unresolvedCommentCount}
         pendingDecisionCount={pendingDecisionCount}
       />
 
-      <section className="grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(295px,0.92fr)] lg:items-start">
-        <div className="lg:col-span-2">
-          <DocumentStatusCard
-            document={matter.document}
-            summary={reviewState.summary}
-            reviewHref={`/matters/${matter.id}/review`}
-          />
-        </div>
+      <DocumentStatusCard
+        className="col-span-12"
+        document={matter.document}
+        summary={reviewState.summary}
+        reviewHref={`/matters/${matter.id}/review`}
+      />
 
-        <div className="space-y-5">
-          <ActivityFeed activity={reviewState.activity} />
-        </div>
+      <ActivityFeed
+        className="col-span-12 lg:col-span-8"
+        activity={reviewState.activity}
+      />
 
-        <aside className="space-y-5">
-          <AgentRunsList
-            agentRuns={matter.agentRuns}
-            collaborators={matter.collaborators}
-          />
-          <CollaboratorStrip collaborators={matter.collaborators} />
-        </aside>
-      </section>
-    </main>
+      <div className="col-span-12 grid gap-5 lg:col-span-4">
+        <AgentRunsList
+          agentRuns={matter.agentRuns}
+          collaborators={matter.collaborators}
+        />
+        <CollaboratorStrip collaborators={matter.collaborators} />
+      </div>
+    </>
   );
 }

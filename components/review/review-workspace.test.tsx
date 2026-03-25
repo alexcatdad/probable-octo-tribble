@@ -79,7 +79,7 @@ describe("ReviewWorkspace", () => {
       })
     );
     await user.click(
-      screen.getByRole("button", { name: /accept suggestion/i })
+      screen.getByRole("button", { name: /^accept$/i })
     );
 
     expect(screen.getByText(/1 of 4 findings reviewed/i)).toBeInTheDocument();
@@ -190,7 +190,7 @@ describe("ReviewWorkspace", () => {
       })
     );
     await user.click(
-      screen.getByRole("button", { name: /reject suggestion/i })
+      screen.getByRole("button", { name: /^reject$/i })
     );
 
     const liabilityCard = screen
@@ -220,7 +220,7 @@ describe("ReviewWorkspace", () => {
         screen.getByRole("heading", {
           name: /shorten the security incident notice period/i,
         }).closest("section") as HTMLElement
-      ).getByRole("button", { name: /^needs follow-up$/i })
+      ).getByRole("button", { name: /^follow-up$/i })
     );
 
     const dataCard = screen
@@ -250,7 +250,7 @@ describe("ReviewWorkspace", () => {
     await user.click(screen.getByRole("button", { name: /add comment/i }));
 
     expect(
-      within(screen.getByRole("region", { name: /activity panel/i })).getByText(
+      within(screen.getByRole("region", { name: /clause activity/i })).getByText(
         newComment
       )
     ).toBeInTheDocument();
@@ -266,7 +266,11 @@ describe("ReviewWorkspace", () => {
     );
 
     expect(screen.getByText(/^waiting on partner$/i)).toBeInTheDocument();
-    expect(screen.getByText(/^1$/i)).toBeInTheDocument();
+    expect(
+      within(screen.getByText(/open comments/i).closest("div") as HTMLElement).getByText(
+        /^1$/i
+      )
+    ).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: /resolve comment/i }));
 
@@ -277,7 +281,7 @@ describe("ReviewWorkspace", () => {
       )
     ).toBeInTheDocument();
     expect(
-      within(screen.getByRole("region", { name: /activity panel/i })).getByText(
+      within(screen.getByRole("region", { name: /clause activity/i })).getByText(
         /resolved comment/i
       )
     ).toBeInTheDocument();
@@ -377,7 +381,7 @@ describe("ReviewWorkspace", () => {
       screen.getByRole("heading", { name: /no active run/i })
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/no machine pass is currently attached to this workspace/i)
+      screen.getByText(/no automated pass is currently attached to this workspace/i)
     ).toBeInTheDocument();
   });
 });

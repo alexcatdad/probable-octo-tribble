@@ -1,29 +1,16 @@
 import type { Collaborator } from "@/lib/types/legal-demo";
-
-function formatTimestamp(timestamp: string) {
-  return new Intl.DateTimeFormat("en", {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: false,
-    timeZone: "UTC",
-  }).format(new Date(timestamp));
-}
+import { cn, formatTimestamp } from "@/lib/utils";
 
 interface CollaboratorStripProps {
+  className?: string;
   collaborators: Collaborator[];
 }
 
-export function CollaboratorStrip({
-  collaborators,
-}: CollaboratorStripProps) {
+export function CollaboratorStrip({ className, collaborators }: CollaboratorStripProps) {
   return (
-    <section className="rounded-[1.55rem] border border-slate-900/10 bg-slate-950 px-5 py-5 text-slate-100 shadow-[0_18px_60px_-50px_rgba(23,32,51,0.55)]">
+    <section className={cn("glass-tile-strong rounded-2xl px-6 py-5", className)}>
       <div className="mb-4">
-        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-slate-400">
-          Matter coverage
-        </p>
+        <p className="section-kicker">Matter coverage</p>
         <h2 className="mt-2 text-xl font-semibold tracking-[-0.04em]">
           Collaborators
         </h2>
@@ -33,32 +20,35 @@ export function CollaboratorStrip({
         {collaborators.map((collaborator) => {
           const waitingStatus =
             collaborator.status.kind === "waiting" ? collaborator.status : null;
-
           return (
             <article
               key={collaborator.id}
-              className="flex items-start gap-3 rounded-[1.2rem] border border-white/10 bg-white/5 px-4 py-4"
+              className="flex items-start gap-3 rounded-xl border border-[var(--glass-border)] bg-[var(--glass-1)] px-4 py-4"
             >
-              <div className="relative flex size-11 shrink-0 items-center justify-center rounded-full bg-white/10 text-sm font-semibold text-white">
+              <div className="relative flex size-11 shrink-0 items-center justify-center rounded-full bg-[var(--glass-3)] text-sm font-semibold">
                 {collaborator.initials}
                 <span
-                  className={`absolute right-0 top-0 size-3 rounded-full border-2 border-slate-950 ${
-                    waitingStatus ? "bg-amber-400" : "bg-emerald-400"
+                  className={`absolute right-0 top-0 flex size-3.5 items-center justify-center rounded-full border-2 border-[#0c1017] text-[6px] font-bold ${
+                    waitingStatus
+                      ? "bg-amber-400 text-amber-950"
+                      : "bg-emerald-400 text-emerald-950"
                   }`}
-                />
+                  aria-label={waitingStatus ? `Waiting on ${waitingStatus.waitingOn}` : "Active"}
+                  title={waitingStatus ? `Waiting on ${waitingStatus.waitingOn}` : "Active"}
+                >
+                  {waitingStatus ? "!" : ""}
+                </span>
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                  <h3 className="text-sm font-semibold text-white">
-                    {collaborator.name}
-                  </h3>
-                  <span className="text-xs uppercase tracking-[0.18em] text-slate-400">
+                  <h3 className="text-sm font-semibold">{collaborator.name}</h3>
+                  <span className="text-xs uppercase tracking-[0.18em] text-[var(--muted-foreground)]">
                     {collaborator.title}
                   </span>
                 </div>
-                <p className="mt-2 text-sm leading-6 text-slate-300">
+                <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">
                   {waitingStatus
-                    ? `Waiting on ${waitingStatus.waitingOn} since ${formatTimestamp(waitingStatus.since)} UTC.`
+                    ? `Waiting on ${waitingStatus.waitingOn} since ${formatTimestamp(waitingStatus.since)}.`
                     : "Active in the current review window."}
                 </p>
               </div>
