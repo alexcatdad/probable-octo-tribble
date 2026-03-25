@@ -14,6 +14,10 @@ describe("ReviewWorkspace", () => {
 
     render(<ReviewWorkspace matter={seedMatter} />);
 
+    expect(
+      screen.getByText(/4 findings need final decisions before partner sign-off/i)
+    ).toBeInTheDocument();
+
     await user.click(
       screen.getByRole("button", {
         name: /liability carve-outs should be tighter/i,

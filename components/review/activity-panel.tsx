@@ -26,7 +26,7 @@ export function ActivityPanel({ className, clause, activity }: ActivityPanelProp
   return (
     <section
       aria-label="Clause activity"
-      className={cn("glass-tile rounded-2xl px-6 py-5", className)}
+      className={cn("glass-tile rounded-2xl px-[var(--tile-inset)] py-5", className)}
     >
       <div className="mb-4">
         <p className="section-kicker">Activity</p>
@@ -42,17 +42,17 @@ export function ActivityPanel({ className, clause, activity }: ActivityPanelProp
 
       <div aria-live="polite" className="space-y-3">
         {activity.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-[var(--glass-border)] bg-[var(--glass-1)] px-4 py-4 text-sm text-[var(--muted-foreground)]">
+          <div className="rounded-[1.3rem] border border-dashed border-[var(--glass-border)] bg-[rgba(255,255,255,0.52)] px-4 py-4 text-sm text-[var(--muted-foreground)]">
             No clause-specific activity has been recorded yet.
           </div>
         ) : (
           activity.map((event) => (
             <article
               key={event.id}
-              className="rounded-xl border border-[var(--glass-border)] bg-[var(--glass-1)] px-4 py-4"
+              className="rounded-[1.3rem] border border-[var(--glass-border)] bg-[rgba(255,255,255,0.52)] px-4 py-4"
             >
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <span className="rounded-full border border-[var(--glass-border-hover)] bg-[var(--glass-3)] px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
+                <span className="rounded-full border border-[var(--glass-border-hover)] bg-[rgba(255,255,255,0.6)] px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
                   {activityLabel(event)}
                 </span>
                 <span className="text-xs text-[var(--muted-foreground)]">

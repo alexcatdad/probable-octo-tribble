@@ -48,7 +48,7 @@ export function CommentsPanel({
   }
 
   return (
-    <section className={cn("glass-tile rounded-2xl px-6 py-5", className)}>
+    <section className={cn("glass-tile rounded-2xl px-[var(--tile-inset)] py-5", className)}>
       <div className="mb-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="section-kicker">Comments</p>
@@ -66,7 +66,7 @@ export function CommentsPanel({
       </div>
 
       <form
-        className="rounded-xl border border-[var(--glass-border)] bg-[var(--glass-1)] px-4 py-4"
+        className="rounded-[1.3rem] border border-[var(--glass-border)] bg-[rgba(255,255,255,0.52)] px-4 py-4"
         onSubmit={(event) => {
           event.preventDefault();
           const nextComment = draft.trim();
@@ -87,7 +87,7 @@ export function CommentsPanel({
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
           placeholder="Request partner input, note fallback drafting, or record negotiation guidance."
-          className="calm-transition mt-3 w-full rounded-xl border border-[var(--glass-border)] bg-[var(--glass-2)] px-3 py-3 text-sm leading-6 shadow-[inset_0_1px_3px_rgba(0,0,0,0.2)] outline-none ring-0 placeholder:text-[var(--muted-foreground)]/50 focus-visible:border-[var(--glass-border-hover)]"
+          className="calm-transition mt-3 w-full rounded-[1rem] border border-[var(--glass-border)] bg-[rgba(255,255,255,0.68)] px-3 py-3 text-sm leading-6 shadow-[inset_0_1px_2px_rgba(74,54,33,0.08)] outline-none ring-0 placeholder:text-[var(--muted-foreground)]/50 focus-visible:border-[var(--glass-border-hover)]"
         />
         <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
           <p className="text-xs leading-5 text-[var(--muted-foreground)]">
@@ -95,7 +95,7 @@ export function CommentsPanel({
           </p>
           <button
             type="submit"
-            className="calm-transition calm-hover-lift inline-flex min-h-10 w-full items-center justify-center rounded-full bg-white px-4 text-sm font-semibold text-[#0c1017] hover:shadow-[0_0_24px_-8px_rgba(201,149,106,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-bronze)] sm:w-auto"
+            className="calm-transition calm-hover-lift inline-flex min-h-10 w-full items-center justify-center rounded-full bg-[var(--foreground)] px-4 text-sm font-semibold text-[var(--background)] hover:shadow-[0_18px_40px_-24px_rgba(58,39,17,0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-bronze)] sm:w-auto"
           >
             Add comment
           </button>
@@ -106,7 +106,7 @@ export function CommentsPanel({
         {comments.map((comment) => (
           <article
             key={comment.id}
-            className="calm-transition rounded-xl border border-[var(--glass-border)] bg-[var(--glass-1)] px-4 py-4"
+            className="calm-transition rounded-[1.3rem] border border-[var(--glass-border)] bg-[rgba(255,255,255,0.52)] px-4 py-4"
           >
             <div className="flex flex-wrap items-center justify-between gap-3">
               <span className={`rounded-full border px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.14em] ${commentStatusTone(comment.status)}`}>

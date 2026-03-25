@@ -51,16 +51,16 @@ export function DocumentPane({
 
   return (
     <section className={cn("glass-tile overflow-hidden rounded-2xl", className)}>
-      <div className="border-b border-[var(--glass-border)] px-6 py-5">
+      <div className="border-b border-[var(--glass-border)] px-[var(--tile-inset)] py-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="section-kicker">Document pane</p>
-            <h2 className="mt-2 text-[2rem] leading-none tracking-[-0.05em]">
+            <h2 className="document-type mt-2 text-[2.1rem] leading-none tracking-[-0.05em]">
               Contract text
             </h2>
           </div>
-          <div className="rounded-full border border-[var(--glass-border)] bg-[var(--glass-2)] px-3 py-1 text-xs font-medium text-[var(--muted-foreground)]">
-            Clause highlights stay linked to the review queue
+          <div className="rounded-full border border-[var(--glass-border)] bg-[rgba(255,255,255,0.56)] px-3 py-1 text-xs font-medium text-[var(--muted-foreground)]">
+            Reading-first review surface
           </div>
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -81,8 +81,8 @@ export function DocumentPane({
                 className={cn(
                   "calm-transition rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-bronze)]",
                   isActive
-                    ? "border-white/20 bg-white text-[#0c1017]"
-                    : "border-[var(--glass-border)] bg-[var(--glass-2)] text-[var(--muted-foreground)] hover:bg-[var(--glass-3)]",
+                    ? "border-[var(--foreground)] bg-[var(--foreground)] text-[var(--background)]"
+                    : "border-[var(--glass-border)] bg-[rgba(255,255,255,0.56)] text-[var(--muted-foreground)] hover:bg-[var(--glass-3)]",
                 )}
               >
                 {modeOption.label}
@@ -92,7 +92,7 @@ export function DocumentPane({
         </div>
       </div>
 
-      <div className="space-y-4 px-6 py-6">
+      <div className="space-y-4 px-[var(--tile-inset)] py-6">
         {document.sections.map((section) => (
           <section key={section.id} className="space-y-3">
             <div className="flex items-center justify-between gap-3 border-b border-[var(--glass-border)] px-2 pb-3">
@@ -138,7 +138,7 @@ export function DocumentPane({
                     onFocus={() => onPreviewClause(clause.id)}
                     onBlur={() => onPreviewClause(null)}
                     aria-label={`Document clause ${section.order}.${clause.order}`}
-                    className="w-full rounded-xl text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-bronze)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0c1017]"
+                    className="w-full rounded-xl text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-bronze)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
                   >
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div className="space-y-1">
@@ -174,14 +174,14 @@ export function DocumentPane({
                       ) : null}
                     </div>
 
-                    <p className="document-type mt-5 max-w-[48rem] text-[1.08rem] leading-8 tracking-[0.002em] text-[var(--muted-foreground)] sm:text-[1.12rem] sm:leading-9">
+                    <p className="document-type mt-5 max-w-[48rem] text-[1.1rem] leading-8 tracking-[0.002em] text-[rgba(52,39,29,0.82)] sm:text-[1.14rem] sm:leading-9">
                       {clause.text}
                     </p>
                   </button>
 
                   {dominantFinding && isActiveClause && viewMode === "redline" ? (
                     <div className="mt-4 grid gap-3 border-t border-[var(--glass-border)] pt-4">
-                      <article className="rounded-xl border border-[var(--tone-danger-border)] bg-[var(--tone-danger)] px-4 py-4">
+                      <article className="rounded-[1.3rem] border border-[var(--tone-danger-border)] bg-[var(--tone-danger)] px-4 py-4">
                         <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[var(--tone-danger-text)]">
                           Current text
                         </p>
@@ -189,7 +189,7 @@ export function DocumentPane({
                           {dominantFinding.suggestedEdit.beforeText}
                         </p>
                       </article>
-                      <article className="rounded-xl border border-[var(--tone-success-border)] bg-[var(--tone-success)] px-4 py-4">
+                      <article className="rounded-[1.3rem] border border-[var(--tone-success-border)] bg-[var(--tone-success)] px-4 py-4">
                         <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[var(--tone-success-text)]">
                           Proposed replacement
                         </p>
@@ -201,7 +201,7 @@ export function DocumentPane({
                   ) : null}
 
                   {dominantFinding && isActiveClause && viewMode === "ai_suggestions" ? (
-                    <div className="mt-4 rounded-xl border border-[var(--tone-warning-border)] bg-[var(--tone-warning)] px-4 py-4">
+                    <div className="mt-4 rounded-[1.3rem] border border-[var(--tone-warning-border)] bg-[var(--tone-warning)] px-4 py-4">
                       <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[var(--tone-warning-text)]">
                         AI-assisted recommendation
                       </p>

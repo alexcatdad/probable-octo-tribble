@@ -60,12 +60,12 @@ export function FindingCard({
   return (
     <article
       className={cn(
-        "rounded-xl border transition-colors",
+        "rounded-[1.3rem] border transition-colors",
         isSelected
-          ? "border-[var(--tone-warning-border)] bg-[var(--tone-warning)] shadow-[0_0_24px_-8px_rgba(201,149,106,0.3)]"
+          ? "border-[var(--tone-warning-border)] bg-[var(--tone-warning)] shadow-[0_18px_40px_-26px_rgba(184,142,93,0.38)]"
           : isPreviewed
             ? "border-[var(--glass-border-hover)] bg-[var(--glass-3)]"
-            : "border-[var(--glass-border)] bg-[var(--glass-1)] hover:border-[var(--glass-border-hover)] hover:bg-[var(--glass-2)]",
+            : "border-[var(--glass-border)] bg-[rgba(255,255,255,0.54)] hover:border-[var(--glass-border-hover)] hover:bg-[var(--glass-2)]",
       )}
     >
       <button
@@ -75,7 +75,7 @@ export function FindingCard({
         onMouseLeave={() => onPreviewChange(false)}
         onFocus={() => onPreviewChange(true)}
         onBlur={() => onPreviewChange(false)}
-        className="block w-full rounded-xl px-4 py-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-bronze)]"
+        className="block w-full rounded-[1.3rem] px-4 py-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-bronze)]"
       >
         <div className="flex flex-wrap items-start justify-between gap-2">
           <span className={`rounded-full border px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.14em] ${severityTone(finding.severity)}`}>
@@ -98,7 +98,7 @@ export function FindingCard({
         <p className="mt-3 text-sm leading-6 text-[var(--muted-foreground)]">
           {finding.rationale}
         </p>
-        <div className="mt-4 rounded-xl border border-[var(--glass-border)] bg-[var(--glass-1)] px-3 py-3 text-xs leading-5 text-[var(--muted-foreground)]">
+        <div className="mt-4 rounded-[1rem] border border-[var(--glass-border)] bg-[rgba(255,255,255,0.52)] px-3 py-3 text-xs leading-5 text-[var(--muted-foreground)]">
           <p className="font-semibold uppercase tracking-[0.16em]">Citation</p>
           <p className="mt-1">{finding.citation}</p>
         </div>

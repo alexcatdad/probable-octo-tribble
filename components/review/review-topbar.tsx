@@ -56,7 +56,7 @@ export function ReviewTopbar({
 
   return (
     <section className={cn("glass-tile overflow-hidden rounded-2xl", className)}>
-      <div className="grid gap-6 px-6 py-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)] lg:items-start">
+      <div className="grid gap-6 px-[var(--tile-inset)] py-6 lg:grid-cols-[minmax(0,1.25fr)_minmax(300px,0.75fr)] lg:items-start">
         <div className="space-y-5">
           <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-3 text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-[var(--muted-foreground)]">
             <Link href={`/matters/${matter.id}`} className="hover:text-[var(--foreground)]">
@@ -70,8 +70,8 @@ export function ReviewTopbar({
 
           <div className="space-y-3">
             <div className="flex flex-wrap items-center gap-3">
-              <span className="rounded-full border border-[var(--glass-border-hover)] bg-[var(--glass-3)] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--muted-foreground)]">
-                Contract review
+              <span className="rounded-full border border-[var(--glass-border-hover)] bg-[rgba(255,255,255,0.56)] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--muted-foreground)]">
+                Document review
               </span>
               <span
                 className={`rounded-full border px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] ${runPresentation.tone}`}
@@ -82,15 +82,15 @@ export function ReviewTopbar({
 
             <div>
               <h1
-                className="text-3xl font-semibold tracking-[-0.05em] sm:text-[2.55rem]"
+                className="document-type text-[2.7rem] leading-[0.96] tracking-[-0.06em] sm:text-[3.2rem]"
                 style={{ viewTransitionName: "document-title" }}
               >
                 {matter.document.title}
               </h1>
-              <p className="mt-2 max-w-3xl text-sm leading-6 text-[var(--muted-foreground)] sm:text-[0.95rem]">
-                Version {matter.document.version} is under clause-by-clause review
-                for {matter.clientName}. All automated findings remain visible, cited,
-                and fully reversible until partner sign-off.
+              <p className="mt-3 max-w-3xl text-[1rem] leading-7 text-[var(--muted-foreground)]">
+                {pendingDecisionCount} findings need final decisions before partner
+                sign-off. Review the cited clause language, compare the edit, and
+                record the right call without losing context.
               </p>
             </div>
           </div>
@@ -101,7 +101,7 @@ export function ReviewTopbar({
               { label: "Pending findings", value: pendingDecisionCount },
               { label: "Open comments", value: summary.unresolvedCommentCount },
             ].map((stat) => (
-              <div key={stat.label} className="rounded-xl border border-[var(--glass-border)] bg-[var(--glass-1)] px-4 py-4">
+              <div key={stat.label} className="rounded-[1.4rem] border border-[var(--glass-border)] bg-[rgba(255,255,255,0.52)] px-4 py-4">
                 <p className="text-[0.68rem] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
                   {stat.label}
                 </p>
@@ -112,15 +112,14 @@ export function ReviewTopbar({
             ))}
           </div>
 
-          <div className="rounded-xl border border-[var(--glass-border)] bg-[var(--glass-1)] px-4 py-4">
+          <div className="rounded-[1.5rem] border border-[var(--glass-border)] bg-[rgba(255,255,255,0.5)] px-4 py-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-[0.68rem] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
                   Active reviewers
                 </p>
                 <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">
-                  Partner, associate, and reviewer status remains visible throughout
-                  the triage process.
+                  Human ownership stays visible while the queue moves toward a final call.
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -132,13 +131,13 @@ export function ReviewTopbar({
                   return (
                     <article
                       key={collaborator.id}
-                      className="min-w-[180px] rounded-xl border border-[var(--glass-border)] bg-[var(--glass-2)] px-3 py-3"
+                      className="min-w-[180px] rounded-[1.2rem] border border-[var(--glass-border)] bg-[rgba(255,255,255,0.6)] px-3 py-3"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="relative flex size-10 shrink-0 items-center justify-center rounded-full bg-[var(--glass-3)] text-xs font-semibold">
+                        <div className="relative flex size-10 shrink-0 items-center justify-center rounded-full bg-[rgba(255,255,255,0.82)] text-xs font-semibold">
                           {collaborator.initials}
                           <span
-                            className={`absolute right-0 top-0 flex size-3.5 items-center justify-center rounded-full border-2 border-[#0c1017] text-[6px] font-bold ${
+                            className={`absolute right-0 top-0 flex size-3.5 items-center justify-center rounded-full border-2 border-[#fffaf4] text-[6px] font-bold ${
                               waitingStatus
                                 ? "bg-amber-400 text-amber-950"
                                 : "bg-emerald-400 text-emerald-950"
@@ -169,10 +168,10 @@ export function ReviewTopbar({
           </div>
         </div>
 
-        <aside className="glass-tile-strong space-y-4 rounded-xl px-6 py-5">
+        <aside className="glass-tile-strong space-y-4 rounded-[1.6rem] px-6 py-5">
           <div>
             <p className="text-[0.68rem] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-              Current agent pass
+              Current pass
             </p>
             <h2 className="mt-2 text-xl font-semibold tracking-[-0.04em]">
               {activeRun?.name ?? "No active run"}
@@ -206,7 +205,7 @@ export function ReviewTopbar({
               aria-valuemin={0}
               aria-valuemax={100}
               aria-label={`Decision coverage: ${progressPercent}%`}
-              className="h-2.5 overflow-hidden rounded-full bg-[var(--glass-3)]"
+              className="h-2.5 overflow-hidden rounded-full bg-[rgba(123,101,72,0.08)]"
             >
               <div
                 className="h-full rounded-full bg-[linear-gradient(90deg,var(--tone-success-text),var(--accent-bronze))]"
@@ -214,8 +213,8 @@ export function ReviewTopbar({
               />
             </div>
             <p className="text-xs leading-5 text-[var(--muted-foreground)]">
-              Every decision preserves the source text, rationale, and clause citation,
-              enabling reviewers to reverse course without losing context.
+              The queue stays readable because the citation, edit, and decision all
+              live close to the clause they affect.
             </p>
           </div>
         </aside>

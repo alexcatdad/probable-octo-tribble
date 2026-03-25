@@ -30,14 +30,14 @@ export function SuggestedEditCard({
 
   if (!finding) {
     return (
-      <section className={cn("glass-tile rounded-2xl px-6 py-5 text-[var(--muted-foreground)]", className)}>
-        Select a finding to inspect the current language and proposed text.
+      <section className={cn("glass-tile rounded-2xl px-[var(--tile-inset)] py-5 text-[var(--muted-foreground)]", className)}>
+        Select a finding to compare the clause language and record the decision.
       </section>
     );
   }
 
   return (
-    <section aria-label="Suggested edit" className={cn("glass-tile rounded-2xl px-6 py-5", className)}>
+    <section aria-label="Suggested edit" className={cn("glass-tile rounded-2xl px-[var(--tile-inset)] py-5", className)}>
       <div className="mb-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="section-kicker">Suggested edit</p>
@@ -52,13 +52,13 @@ export function SuggestedEditCard({
           {finding.suggestedEdit.summary}
         </h2>
         <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">
-          {clauseLabel}. This recommendation remains reversible while the source
-          and proposed language are presented side by side.
+          {clauseLabel}. Review the existing language, compare the proposed edit,
+          and make the final call.
         </p>
       </div>
 
       <div className="grid gap-3">
-        <article className="calm-transition rounded-xl border border-[var(--tone-danger-border)] bg-[var(--tone-danger)] px-4 py-4">
+        <article className="calm-transition rounded-[1.3rem] border border-[var(--tone-danger-border)] bg-[var(--tone-danger)] px-4 py-4">
           <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[var(--tone-danger-text)]">
             Current text
           </p>
@@ -67,7 +67,7 @@ export function SuggestedEditCard({
           </p>
         </article>
 
-        <article className="calm-transition rounded-xl border border-[var(--tone-success-border)] bg-[var(--tone-success)] px-4 py-4">
+        <article className="calm-transition rounded-[1.3rem] border border-[var(--tone-success-border)] bg-[var(--tone-success)] px-4 py-4">
           <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[var(--tone-success-text)]">
             Proposed text
           </p>
@@ -77,7 +77,7 @@ export function SuggestedEditCard({
         </article>
       </div>
 
-      <div className="mt-4 rounded-xl border border-[var(--glass-border)] bg-[var(--glass-1)] px-4 py-4">
+      <div className="mt-4 rounded-[1.3rem] border border-[var(--glass-border)] bg-[rgba(255,255,255,0.52)] px-4 py-4">
         <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
           Reviewer rationale
         </p>
@@ -90,7 +90,7 @@ export function SuggestedEditCard({
         <button
           type="button"
           onClick={() => onAcceptSuggestion(finding.id)}
-          className="calm-transition calm-hover-lift inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-white px-4 text-sm font-semibold text-[#0c1017] shadow-[0_0_24px_-8px_rgba(201,149,106,0.3)] hover:shadow-[0_0_32px_-6px_rgba(201,149,106,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-bronze)]"
+          className="calm-transition calm-hover-lift inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[var(--foreground)] px-4 text-sm font-semibold text-[var(--background)] shadow-[0_18px_40px_-24px_rgba(58,39,17,0.35)] hover:shadow-[0_20px_42px_-22px_rgba(58,39,17,0.32)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-bronze)]"
         >
           <CheckCheck className="size-4" />
           Accept

@@ -83,20 +83,19 @@ export function FindingsRail({
       aria-label="Findings rail"
       className={cn("space-y-4 min-[1180px]:sticky min-[1180px]:top-5", className)}
     >
-      <section className="glass-tile-strong rounded-2xl px-6 py-5">
+      <section className="glass-tile-strong rounded-2xl px-[var(--tile-inset)] py-5">
         <div className="mb-4">
           <p className="section-kicker">Findings rail</p>
           <div className="mt-2 flex flex-wrap items-end justify-between gap-3">
             <h2 className="font-heading text-[1.9rem] leading-none tracking-[-0.05em]">
               Review queue
             </h2>
-            <span className="rounded-full border border-[var(--glass-border-hover)] bg-[var(--glass-3)] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[var(--muted-foreground)]">
+            <span className="rounded-full border border-[var(--glass-border-hover)] bg-[rgba(255,255,255,0.6)] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[var(--muted-foreground)]">
               {pluralise(filteredFindings.length, "finding")}
             </span>
           </div>
           <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">
-            Each automated finding retains its source citation and remains
-            fully reversible until partner sign-off.
+            Cited findings stay close to the document and the next decision.
           </p>
           <div className="mt-4 flex flex-wrap items-center gap-2">
             {queueFilters.map((filter) => {
@@ -111,8 +110,8 @@ export function FindingsRail({
                   }}
                   className={`calm-transition rounded-full border px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-bronze)] ${
                     isActive
-                      ? "border-white/20 bg-white text-[#0c1017]"
-                      : "border-[var(--glass-border)] bg-[var(--glass-1)] text-[var(--muted-foreground)] hover:bg-[var(--glass-2)]"
+                      ? "border-[var(--foreground)] bg-[var(--foreground)] text-[var(--background)]"
+                      : "border-[var(--glass-border)] bg-[rgba(255,255,255,0.56)] text-[var(--muted-foreground)] hover:bg-[var(--glass-2)]"
                   }`}
                 >
                   {filter.label}
@@ -154,7 +153,7 @@ export function FindingsRail({
               />
             ))
           ) : (
-            <div className="rounded-xl border border-dashed border-[var(--glass-border)] bg-[var(--glass-1)] px-4 py-4 text-sm leading-6 text-[var(--muted-foreground)]">
+            <div className="rounded-[1.3rem] border border-dashed border-[var(--glass-border)] bg-[rgba(255,255,255,0.56)] px-4 py-4 text-sm leading-6 text-[var(--muted-foreground)]">
               No findings match this review slice yet.
             </div>
           )}
