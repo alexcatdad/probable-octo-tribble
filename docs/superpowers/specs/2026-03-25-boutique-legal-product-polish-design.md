@@ -211,6 +211,40 @@ The app should preserve the existing core flow:
 
 The structure is right. The polish pass should improve composition and clarity, not rebuild the product concept from scratch.
 
+## Layout Invariants
+
+The redesign must preserve the existing text-alignment discipline that the demo was built around.
+
+This is not a cosmetic implementation detail. It is a core layout rule.
+
+### Shared Grid As The Source Of Truth
+
+The existing grid system should remain the single source of layout truth across the landing page, shared shell, overview, and review workspace.
+
+That means:
+
+- preserve the shared page grid and subgrid alignment model
+- keep text columns aligned across sibling surfaces
+- preserve or refine the shared inset token rather than replacing it with one-off paddings
+- ensure headings, body copy, badges, and controls align to the same internal text rhythm where surfaces are meant to relate
+
+### Avoid Faux Alignment
+
+The redesign should not rely on outer container alignment while letting text drift internally because of inconsistent padding and margin decisions.
+
+Specifically avoid:
+
+- ad hoc horizontal padding per card when the content should align with neighboring surfaces
+- decorative wrappers that push text off the shared rhythm
+- inconsistent top and side inset patterns between related panels
+- margin fixes that make containers align while text baselines do not
+
+### Practical Design Rule
+
+When a set of surfaces is meant to read as part of the same composition, the text inside those surfaces should align intentionally, not just the boxes around them.
+
+If a visual treatment breaks that rule, adjust the treatment instead of sacrificing alignment.
+
 ## Screen-Level Design
 
 ### 1. Landing Page
