@@ -1,3 +1,4 @@
+import { createReviewState } from "../review-state";
 import type {
   AgentRun,
   Collaborator,
@@ -5,7 +6,6 @@ import type {
   Finding,
   Matter,
 } from "../types/legal-demo";
-import { createReviewState } from "../review-state";
 import { seedActivity } from "./activity";
 import { seedDocument } from "./document";
 

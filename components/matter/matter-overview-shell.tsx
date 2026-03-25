@@ -1,18 +1,18 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import {
-  readPersistedReviewDemoState,
-  subscribeToReviewDemoState,
-} from "@/hooks/use-review-demo-state";
-import type { ReviewState } from "@/lib/review-state";
-import type { Matter } from "@/lib/types/legal-demo";
 import { ActivityFeed } from "@/components/matter/activity-feed";
 import { AgentRunsList } from "@/components/matter/agent-runs-list";
 import { CollaboratorStrip } from "@/components/matter/collaborator-strip";
 import { DocumentStatusCard } from "@/components/matter/document-status-card";
 import { MatterHeader } from "@/components/matter/matter-header";
 import { OpenIssuesStrip } from "@/components/matter/open-issues-strip";
+import {
+  readPersistedReviewDemoState,
+  subscribeToReviewDemoState,
+} from "@/hooks/use-review-demo-state";
+import type { ReviewState } from "@/lib/review-state";
+import type { Matter } from "@/lib/types/legal-demo";
 
 interface MatterOverviewShellProps {
   matter: Matter;
@@ -26,18 +26,19 @@ export function MatterOverviewShell({
   const reviewState = useSyncExternalStore(
     (onStoreChange) => subscribeToReviewDemoState(matter.id, onStoreChange),
     () => readPersistedReviewDemoState(matter.id) ?? initialReviewState,
-    () => initialReviewState
+    () => initialReviewState,
   );
 
   const flaggedClauseCount = new Set(
-    matter.findings.map((finding) => finding.clauseId)
+    matter.findings.map((finding) => finding.clauseId),
   ).size;
   const pendingDecisionCount =
     reviewState.summary.totalFindings - reviewState.summary.reviewedCount;
   const openedAt =
     matter.activity[0]?.occurredAt ?? matter.agentRuns[0]?.startedAt;
   const latestActivityAt =
-    reviewState.activity[reviewState.activity.length - 1]?.occurredAt ?? openedAt;
+    reviewState.activity[reviewState.activity.length - 1]?.occurredAt ??
+    openedAt;
 
   return (
     <>

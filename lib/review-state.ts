@@ -51,7 +51,7 @@ function buildFindingsMap(findings: Finding[]): Record<string, Finding> {
 
 function buildReviewSummary(
   findings: Finding[],
-  comments: Comment[]
+  comments: Comment[],
 ): ReviewSummary {
   let acceptedCount = 0;
   let rejectedCount = 0;
@@ -88,7 +88,10 @@ function buildReviewSummary(
   };
 }
 
-function findClause(document: ContractDocument, clauseId: string): Clause | undefined {
+function findClause(
+  document: ContractDocument,
+  clauseId: string,
+): Clause | undefined {
   for (const section of document.sections) {
     const clause = section.clauses.find((item) => item.id === clauseId);
     if (clause) {
@@ -101,18 +104,18 @@ function findClause(document: ContractDocument, clauseId: string): Clause | unde
 
 function firstFindingForClause(
   state: ReviewState,
-  clauseId: string
+  clauseId: string,
 ): string | null {
   return (
     state.findingOrder.find(
-      (findingId) => state.findings[findingId]?.clauseId === clauseId
+      (findingId) => state.findings[findingId]?.clauseId === clauseId,
     ) ?? null
   );
 }
 
 function updateFindingDecision(
   finding: Finding,
-  decision: FindingDecision
+  decision: FindingDecision,
 ): Finding {
   return {
     ...finding,
@@ -120,7 +123,10 @@ function updateFindingDecision(
   };
 }
 
-function updateCommentStatus(comment: Comment, status: Comment["status"]): Comment {
+function updateCommentStatus(
+  comment: Comment,
+  status: Comment["status"],
+): Comment {
   return {
     ...comment,
     status,
@@ -136,12 +142,14 @@ function latestActivityTimestamp(activity: ActivityEvent[]): string {
 }
 
 function nextTimestamp(activity: ActivityEvent[]): string {
-  return new Date(Date.parse(latestActivityTimestamp(activity)) + 60_000).toISOString();
+  return new Date(
+    Date.parse(latestActivityTimestamp(activity)) + 60_000,
+  ).toISOString();
 }
 
 function addActivityEvent(
   state: ReviewState,
-  event: ActivityEventInput
+  event: ActivityEventInput,
 ): ActivityEvent[] {
   return [
     ...state.activity,
@@ -158,8 +166,8 @@ export function createReviewState(matter: Matter): ReviewState {
   const findingOrder = matter.findings.map((finding) => finding.id);
   const selectedClauseId = matter.document.sections[0]?.clauses[0]?.id ?? "";
   const selectedFindingId = selectedClauseId
-    ? matter.findings.find((finding) => finding.clauseId === selectedClauseId)?.id ??
-      null
+    ? (matter.findings.find((finding) => finding.clauseId === selectedClauseId)
+        ?.id ?? null)
     : null;
 
   return {
@@ -176,7 +184,7 @@ export function createReviewState(matter: Matter): ReviewState {
 
 export function selectClauseById(
   state: ReviewState,
-  clauseId: string
+  clauseId: string,
 ): Clause | undefined {
   return state.document.sections
     .flatMap((section) => section.clauses)
@@ -189,7 +197,7 @@ export function selectSelectedClause(state: ReviewState): Clause | undefined {
 
 export function selectFindingById(
   state: ReviewState,
-  findingId: string | null
+  findingId: string | null,
 ): Finding | undefined {
   if (!findingId) {
     return undefined;
@@ -204,7 +212,7 @@ export function selectSelectedFinding(state: ReviewState): Finding | undefined {
 
 export function selectFindingsForClause(
   state: ReviewState,
-  clauseId: string
+  clauseId: string,
 ): Finding[] {
   return state.findingOrder.flatMap((findingId) => {
     const finding = state.findings[findingId];
@@ -214,7 +222,7 @@ export function selectFindingsForClause(
 
 export function reviewReducer(
   state: ReviewState,
-  action: ReviewAction
+  action: ReviewAction,
 ): ReviewState {
   switch (action.type) {
     case "select_clause": {
@@ -292,7 +300,10 @@ export function reviewReducer(
         activity: nextActivity,
         selectedClauseId: finding.clauseId,
         selectedFindingId: finding.id,
-        summary: buildReviewSummary(Object.values(nextFindings), state.comments),
+        summary: buildReviewSummary(
+          Object.values(nextFindings),
+          state.comments,
+        ),
       };
     }
     case "revert_finding_decision": {
@@ -302,7 +313,9 @@ export function reviewReducer(
         return state;
       }
 
-      const revertedFinding = updateFindingDecision(finding, { kind: "pending" });
+      const revertedFinding = updateFindingDecision(finding, {
+        kind: "pending",
+      });
       const nextFindings = {
         ...state.findings,
         [finding.id]: revertedFinding,
@@ -318,7 +331,10 @@ export function reviewReducer(
         ...state,
         findings: nextFindings,
         activity: nextActivity,
-        summary: buildReviewSummary(Object.values(nextFindings), state.comments),
+        summary: buildReviewSummary(
+          Object.values(nextFindings),
+          state.comments,
+        ),
       };
     }
     case "add_comment": {
@@ -353,12 +369,15 @@ export function reviewReducer(
         ...state,
         comments: nextComments,
         activity: nextActivity,
-        summary: buildReviewSummary(Object.values(state.findings), nextComments),
+        summary: buildReviewSummary(
+          Object.values(state.findings),
+          nextComments,
+        ),
       };
     }
     case "update_comment_status": {
       const currentComment = state.comments.find(
-        (comment) => comment.id === action.commentId
+        (comment) => comment.id === action.commentId,
       );
 
       if (!currentComment || currentComment.status === action.status) {
@@ -368,7 +387,7 @@ export function reviewReducer(
       const nextComments = state.comments.map((comment) =>
         comment.id === action.commentId
           ? updateCommentStatus(comment, action.status)
-          : comment
+          : comment,
       );
       const nextActivity = addActivityEvent(state, {
         kind: "comment_status_changed",
@@ -387,7 +406,10 @@ export function reviewReducer(
         ...state,
         comments: nextComments,
         activity: nextActivity,
-        summary: buildReviewSummary(Object.values(state.findings), nextComments),
+        summary: buildReviewSummary(
+          Object.values(state.findings),
+          nextComments,
+        ),
       };
     }
     default:

@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
 import { Undo2 } from "lucide-react";
+import { useEffect } from "react";
 
 const UNDO_TIMEOUT_MS = 6000;
 

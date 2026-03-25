@@ -2,13 +2,17 @@ import { expect, it } from "vitest";
 import { seedActivity } from "./demo-data/activity";
 import { seedDocument } from "./demo-data/document";
 import { seedMatter, seedReviewState } from "./demo-data/matter";
-import { createReviewState, reviewReducer, selectSelectedFinding } from "./review-state";
+import {
+  createReviewState,
+  reviewReducer,
+  selectSelectedFinding,
+} from "./review-state";
 import type { Matter } from "./types/legal-demo";
 
 it("defaults to the first clause and first finding in the seed matter", () => {
   expect(seedReviewState.selectedClauseId).toBe("clause-indemnity-1");
   expect(selectSelectedFinding(seedReviewState)?.id).toBe(
-    "finding-indemnity-1"
+    "finding-indemnity-1",
   );
   expect(seedReviewState.summary.reviewedCount).toBe(0);
   expect(seedReviewState.summary.unresolvedCommentCount).toBe(1);
@@ -90,7 +94,7 @@ it("marks a finding as accepted and updates reviewed counts", () => {
   });
 
   expect(nextState.findings["finding-indemnity-1"].decision.kind).toBe(
-    "accepted"
+    "accepted",
   );
   expect(nextState.summary.reviewedCount).toBe(1);
   expect(nextState.summary.acceptedCount).toBe(1);
@@ -128,7 +132,7 @@ it("marks a finding as needing follow-up", () => {
 
 it("records queued findings as queued activity instead of a pending decision", () => {
   const queuedEvent = seedReviewState.activity.find(
-    (event) => event.kind === "finding_queued"
+    (event) => event.kind === "finding_queued",
   );
 
   expect(queuedEvent).toMatchObject({
@@ -138,8 +142,9 @@ it("records queued findings as queued activity instead of a pending decision", (
   });
   expect(
     seedReviewState.activity.some(
-      (event) => event.kind === "finding_decision" && event.decision === "pending"
-    )
+      (event) =>
+        event.kind === "finding_decision" && event.decision === "pending",
+    ),
   ).toBe(false);
 });
 
@@ -153,7 +158,7 @@ it("adds a comment, appends activity, and increments unresolved comment counts",
   expect(nextState.comments).toHaveLength(seedReviewState.comments.length + 1);
   expect(nextState.activity).toHaveLength(seedReviewState.activity.length + 1);
   expect(nextState.summary.unresolvedCommentCount).toBe(
-    seedReviewState.summary.unresolvedCommentCount + 1
+    seedReviewState.summary.unresolvedCommentCount + 1,
   );
 });
 
@@ -169,7 +174,7 @@ it("marks a comment as waiting on partner without reducing unresolved counts", (
     status: "waiting_on_partner",
   });
   expect(nextState.summary.unresolvedCommentCount).toBe(
-    seedReviewState.summary.unresolvedCommentCount
+    seedReviewState.summary.unresolvedCommentCount,
   );
   expect(nextState.activity.at(-1)).toMatchObject({
     kind: "comment_status_changed",

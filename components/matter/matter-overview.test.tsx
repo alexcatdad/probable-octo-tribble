@@ -20,20 +20,22 @@ it("renders the matter overview route with the primary review context", async ()
   render(page);
 
   expect(
-    screen.getByRole("heading", { name: /acme co\. v\. omnicore/i })
+    screen.getByRole("heading", { name: /acme co\. v\. omnicore/i }),
   ).toBeInTheDocument();
   expect(
-    screen.getByRole("heading", { name: /vendor msa v3/i })
+    screen.getByRole("heading", { name: /vendor msa v3/i }),
   ).toBeInTheDocument();
   expect(
-    screen.getByRole("link", { name: /continue review/i })
+    screen.getByRole("link", { name: /continue review/i }),
   ).toHaveAttribute("href", "/matters/matter-acme-v-omnicore/review");
   expect(screen.getByText(/human review underway/i)).toBeInTheDocument();
   expect(screen.getByText(/^completed$/i)).toBeInTheDocument();
   expect(screen.getByText(/^needs human review$/i)).toBeInTheDocument();
   expect(screen.getByText(/^superseded$/i)).toBeInTheDocument();
   expect(
-    screen.getByText(/partner guidance still needed on the open indemnity and liability calls/i)
+    screen.getByText(
+      /partner guidance still needed on the open indemnity and liability calls/i,
+    ),
   ).toBeInTheDocument();
 });
 
@@ -51,7 +53,7 @@ it("falls back to the seeded review state when the persisted snapshot is malform
 
   window.sessionStorage.setItem(
     getReviewDemoStateStorageKey(seedMatter.id),
-    JSON.stringify(malformedState)
+    JSON.stringify(malformedState),
   );
 
   const page = await MatterOverviewPage({
@@ -61,10 +63,10 @@ it("falls back to the seeded review state when the persisted snapshot is malform
   render(page);
 
   expect(
-    await screen.findByText(/0 of 4 decisions recorded/i)
+    await screen.findByText(/0 of 4 decisions recorded/i),
   ).toBeInTheDocument();
   expect(
-    screen.getByText(/4 findings still waiting for a decision/i)
+    screen.getByText(/4 findings still waiting for a decision/i),
   ).toBeInTheDocument();
 });
 
@@ -103,9 +105,7 @@ it("renders the overview even when sessionStorage access throws", async () => {
 
     render(page);
 
-    expect(
-      screen.getByText(/0 of 4 decisions recorded/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/0 of 4 decisions recorded/i)).toBeInTheDocument();
   } finally {
     sessionStorageSpy.mockRestore();
   }
@@ -115,7 +115,7 @@ it("renders generic demo shell chrome for nested demo routes", () => {
   render(
     <DemoLayout>
       <div>Nested route content</div>
-    </DemoLayout>
+    </DemoLayout>,
   );
 
   expect(screen.getByText(/sample workspace/i)).toBeInTheDocument();

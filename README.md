@@ -5,25 +5,25 @@ A polished legaltech demo for reviewing a matter, inspecting the review workspac
 ## Quick Start
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 ## Verification
 
 ```bash
-npm run lint
-npm test
-npm run build
+pnpm lint
+pnpm test
+pnpm build
 ```
 
 ## Production Preview
 
 ```bash
-npm run preview
+pnpm preview
 ```
 
-`npm run preview` builds first, then starts the production server. The equivalent manual sequence is `npm run build && npm run start`.
+`pnpm preview` builds first, then starts the production server. The equivalent manual sequence is `pnpm build && pnpm start`.
 
 Open the root route at `/` first, then click into the overview and review workspace.
 
@@ -31,7 +31,7 @@ Open the root route at `/` first, then click into the overview and review worksp
 
 Deploy to Vercel from the repository root.
 
-- Build command: `npm run build`
+- Build command: `pnpm build`
 - Output is the standard Next.js production build
 - No environment variables are required
 

@@ -13,7 +13,7 @@
 ## Implementation Notes
 
 - The repository currently contains only docs and Git metadata at commit `e310351`.
-- Build for `npm` unless the user explicitly prefers `pnpm` or `bun`.
+- Build for `pnpm` unless the user explicitly prefers `npm` or `bun`.
 - Keep the app intentionally narrow: one matter, one contract, 3-5 findings, one believable walkthrough.
 - During implementation, use `@superpowers/test-driven-development` before changing behavior, `@frontend-design` for visual decisions, and `@superpowers/verification-before-completion` before claiming the demo is done.
 
@@ -22,7 +22,7 @@
 ### Root configuration
 
 - Create: `package.json`
-- Create: `package-lock.json`
+- Create: `pnpm-lock.yaml`
 - Create: `next.config.ts`
 - Create: `tsconfig.json`
 - Create: `postcss.config.mjs`
@@ -85,7 +85,7 @@
 
 **Files:**
 - Create: `package.json`
-- Create: `package-lock.json`
+- Create: `pnpm-lock.yaml`
 - Create: `next.config.ts`
 - Create: `tsconfig.json`
 - Create: `postcss.config.mjs`
@@ -114,7 +114,7 @@ it("renders a link into the demo workspace", () => {
 
 - [ ] **Step 2: Run the test to verify the repo is not scaffolded yet**
 
-Run: `npm test -- app/page.test.tsx`
+Run: `pnpm test -- app/page.test.tsx`
 Expected: fail because the Next.js app and test tooling do not exist yet
 
 - [ ] **Step 3: Scaffold a minimal Next.js App Router project into the repo**
@@ -123,7 +123,7 @@ Recommended approach:
 
 ```bash
 mkdir -p ../probable-octo-tribble-scaffold
-npx create-next-app@latest ../probable-octo-tribble-scaffold --ts --tailwind --eslint --app --use-npm --import-alias "@/*"
+npx create-next-app@latest ../probable-octo-tribble-scaffold --ts --tailwind --eslint --app --use-pnpm --import-alias "@/*"
 rsync -a --exclude=".git" --exclude="README.md" ../probable-octo-tribble-scaffold/ ./
 rm -rf ../probable-octo-tribble-scaffold
 ```
@@ -135,8 +135,8 @@ Then restore the repo-specific docs if the scaffold overwrote any files.
 Run:
 
 ```bash
-npm install class-variance-authority clsx tailwind-merge lucide-react
-npm install -D vitest @vitejs/plugin-react jsdom @testing-library/react @testing-library/jest-dom @testing-library/user-event
+pnpm add class-variance-authority clsx tailwind-merge lucide-react
+pnpm add -D vitest @vitejs/plugin-react jsdom @testing-library/react @testing-library/jest-dom @testing-library/user-event
 npx shadcn@latest init -d
 npx shadcn@latest add button card badge avatar scroll-area separator tabs sheet tooltip
 ```
@@ -154,7 +154,7 @@ Minimum requirements:
 Run:
 
 ```bash
-npm test -- app/page.test.tsx
+pnpm test -- app/page.test.tsx
 ```
 
 Expected: pass with one green test
@@ -162,7 +162,7 @@ Expected: pass with one green test
 - [ ] **Step 7: Commit the scaffold checkpoint**
 
 ```bash
-git add package.json package-lock.json next.config.ts tsconfig.json postcss.config.mjs eslint.config.mjs components.json app lib vitest.config.ts vitest.setup.ts .gitignore
+git add package.json pnpm-lock.yaml next.config.ts tsconfig.json postcss.config.mjs eslint.config.mjs components.json app lib vitest.config.ts vitest.setup.ts .gitignore
 git commit -m "chore: scaffold Next.js legaltech demo"
 ```
 
@@ -200,7 +200,7 @@ it("marks a finding as accepted and updates summary counts", () => {
 
 - [ ] **Step 2: Run the reducer tests and confirm they fail**
 
-Run: `npm test -- lib/review-state.test.ts`
+Run: `pnpm test -- lib/review-state.test.ts`
 Expected: fail because the types, seed data, and reducer do not exist yet
 
 - [ ] **Step 3: Create the typed demo entities**
@@ -242,7 +242,7 @@ Keep the implementation simple and deterministic so it remains easy to test.
 
 - [ ] **Step 6: Run the reducer tests and make them pass**
 
-Run: `npm test -- lib/review-state.test.ts`
+Run: `pnpm test -- lib/review-state.test.ts`
 Expected: pass with all reducer transition tests green
 
 - [ ] **Step 7: Commit the domain model checkpoint**
@@ -275,7 +275,7 @@ Cover:
 
 - [ ] **Step 2: Run the overview test and verify it fails**
 
-Run: `npm test -- components/matter/matter-overview.test.tsx`
+Run: `pnpm test -- components/matter/matter-overview.test.tsx`
 Expected: fail because the overview route and components do not exist yet
 
 - [ ] **Step 3: Build the overview route with a calm, dense layout**
@@ -298,12 +298,12 @@ Implementation notes:
 
 - [ ] **Step 5: Run the overview test and make it pass**
 
-Run: `npm test -- components/matter/matter-overview.test.tsx`
+Run: `pnpm test -- components/matter/matter-overview.test.tsx`
 Expected: pass with the overview assertions green
 
 - [ ] **Step 6: Manually verify the route in the browser**
 
-Run: `npm run dev`
+Run: `pnpm dev`
 Check:
 - `/` loads the landing link
 - `/matters/matter-acme-v-omnicore` loads the overview cleanly
@@ -351,7 +351,7 @@ expect(screen.getByText(/1 of 4 findings reviewed/i)).toBeInTheDocument();
 
 - [ ] **Step 2: Run the workspace tests and verify they fail**
 
-Run: `npm test -- components/review/review-workspace.test.tsx`
+Run: `pnpm test -- components/review/review-workspace.test.tsx`
 Expected: fail because the workspace does not exist yet
 
 - [ ] **Step 3: Build the client-side review state hook**
@@ -383,12 +383,12 @@ Required behavior:
 
 - [ ] **Step 6: Run the workspace tests and make them pass**
 
-Run: `npm test -- components/review/review-workspace.test.tsx`
+Run: `pnpm test -- components/review/review-workspace.test.tsx`
 Expected: pass with all interaction assertions green
 
 - [ ] **Step 7: Manually verify the full demo story**
 
-Run: `npm run dev`
+Run: `pnpm dev`
 Walk through:
 1. open the overview
 2. enter the review workspace
@@ -448,7 +448,7 @@ Avoid decorative animation that slows the reading workflow.
 
 - [ ] **Step 4: Verify responsive behavior manually**
 
-Run: `npm run dev`
+Run: `pnpm dev`
 Check widths:
 - desktop around 1440px
 - laptop around 1200px
@@ -461,7 +461,7 @@ Expected:
 
 - [ ] **Step 5: Re-run the test suite to catch regressions**
 
-Run: `npm test`
+Run: `pnpm test`
 Expected: all tests still pass
 
 - [ ] **Step 6: Commit the polish checkpoint**
@@ -502,9 +502,9 @@ Include:
 Run:
 
 ```bash
-npm run lint
-npm test
-npm run build
+pnpm lint
+pnpm test
+pnpm build
 ```
 
 Expected:
@@ -517,7 +517,7 @@ Expected:
 Run:
 
 ```bash
-npm run start
+pnpm start
 ```
 
 Check:
@@ -529,7 +529,7 @@ Check:
 
 Checklist:
 - confirm no environment variables are required
-- confirm `npm run build` is the detected build command
+- confirm `pnpm build` is the detected build command
 - confirm the root route is a clean entry point for reviewers
 
 - [ ] **Step 6: Commit the documentation and verification checkpoint**

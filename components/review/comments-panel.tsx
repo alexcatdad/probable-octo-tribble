@@ -48,7 +48,12 @@ export function CommentsPanel({
   }
 
   return (
-    <section className={cn("glass-tile rounded-2xl px-[var(--tile-inset)] py-5", className)}>
+    <section
+      className={cn(
+        "glass-tile rounded-2xl px-[var(--tile-inset)] py-5",
+        className,
+      )}
+    >
       <div className="mb-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="section-kicker">Comments</p>
@@ -60,8 +65,8 @@ export function CommentsPanel({
           Clause discussion
         </h2>
         <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">
-          Keep reviewer notes specific to fallback position, partner guidance, or
-          negotiation posture for {clause.title.toLowerCase()}.
+          Keep reviewer notes specific to fallback position, partner guidance,
+          or negotiation posture for {clause.title.toLowerCase()}.
         </p>
       </div>
 
@@ -109,19 +114,25 @@ export function CommentsPanel({
             className="calm-transition rounded-[1.3rem] border border-[var(--glass-border)] bg-[rgba(255,255,255,0.52)] px-4 py-4"
           >
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <span className={`rounded-full border px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.14em] ${commentStatusTone(comment.status)}`}>
+              <span
+                className={`rounded-full border px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.14em] ${commentStatusTone(comment.status)}`}
+              >
                 {commentStatusLabel(comment.status)}
               </span>
               <span className="text-xs text-[var(--muted-foreground)]">
                 {formatTimestamp(comment.createdAt)}
               </span>
             </div>
-            <p className="mt-3 text-sm leading-6 text-[var(--muted-foreground)]">{comment.body}</p>
+            <p className="mt-3 text-sm leading-6 text-[var(--muted-foreground)]">
+              {comment.body}
+            </p>
             <div className="mt-4 flex flex-wrap gap-2">
               {comment.status !== "waiting_on_partner" ? (
                 <button
                   type="button"
-                  onClick={() => onUpdateCommentStatus(comment.id, "waiting_on_partner")}
+                  onClick={() =>
+                    onUpdateCommentStatus(comment.id, "waiting_on_partner")
+                  }
                   className="calm-transition rounded-full border border-[var(--tone-info-border)] bg-[var(--tone-info)] px-3 py-1.5 text-xs font-medium text-[var(--tone-info-text)] hover:bg-[rgba(90,143,191,0.2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-bronze)]"
                 >
                   Waiting on partner

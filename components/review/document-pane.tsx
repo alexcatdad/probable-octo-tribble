@@ -1,5 +1,5 @@
-import { cn, pluralise } from "@/lib/utils";
 import type { ContractDocument, Finding } from "@/lib/types/legal-demo";
+import { cn, pluralise } from "@/lib/utils";
 
 export type DocumentReviewMode = "clean" | "redline" | "ai_suggestions";
 
@@ -50,7 +50,9 @@ export function DocumentPane({
   const activeFindingId = previewFindingId ?? selectedFindingId;
 
   return (
-    <section className={cn("glass-tile overflow-hidden rounded-2xl", className)}>
+    <section
+      className={cn("glass-tile overflow-hidden rounded-2xl", className)}
+    >
       <div className="border-b border-[var(--glass-border)] px-[var(--tile-inset)] py-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -106,10 +108,10 @@ export function DocumentPane({
 
             {section.clauses.map((clause) => {
               const clauseFindings = findings.filter(
-                (finding) => finding.clauseId === clause.id
+                (finding) => finding.clauseId === clause.id,
               );
               const activeFinding = clauseFindings.find(
-                (finding) => finding.id === activeFindingId
+                (finding) => finding.id === activeFindingId,
               );
               const dominantFinding = activeFinding ?? clauseFindings[0];
               const isSelected = clause.id === selectedClauseId;
@@ -179,7 +181,9 @@ export function DocumentPane({
                     </p>
                   </button>
 
-                  {dominantFinding && isActiveClause && viewMode === "redline" ? (
+                  {dominantFinding &&
+                  isActiveClause &&
+                  viewMode === "redline" ? (
                     <div className="mt-4 grid gap-3 border-t border-[var(--glass-border)] pt-4">
                       <article className="rounded-[1.3rem] border border-[var(--tone-danger-border)] bg-[var(--tone-danger)] px-4 py-4">
                         <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[var(--tone-danger-text)]">
@@ -200,7 +204,9 @@ export function DocumentPane({
                     </div>
                   ) : null}
 
-                  {dominantFinding && isActiveClause && viewMode === "ai_suggestions" ? (
+                  {dominantFinding &&
+                  isActiveClause &&
+                  viewMode === "ai_suggestions" ? (
                     <div className="mt-4 rounded-[1.3rem] border border-[var(--tone-warning-border)] bg-[var(--tone-warning)] px-4 py-4">
                       <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[var(--tone-warning-text)]">
                         AI-assisted recommendation

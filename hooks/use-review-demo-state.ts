@@ -3,11 +3,11 @@
 import { useEffect, useReducer } from "react";
 import {
   createReviewState,
+  type ReviewState,
   reviewReducer,
   selectFindingsForClause,
   selectSelectedClause,
   selectSelectedFinding,
-  type ReviewState,
 } from "@/lib/review-state";
 import type {
   ActivityEvent,
@@ -95,7 +95,7 @@ function safeRemoveSessionStorageItem(storageKey: string) {
 function eventMatchesClause(
   event: ActivityEvent,
   clauseId: string,
-  findingsById: Record<string, { clauseId: string }>
+  findingsById: Record<string, { clauseId: string }>,
 ) {
   switch (event.kind) {
     case "finding_created":
@@ -136,9 +136,7 @@ function isFindingSeverity(value: unknown): value is Finding["severity"] {
 
 function isCommentStatus(value: unknown): value is Comment["status"] {
   return (
-    value === "open" ||
-    value === "waiting_on_partner" ||
-    value === "resolved"
+    value === "open" || value === "waiting_on_partner" || value === "resolved"
   );
 }
 
@@ -327,11 +325,9 @@ function isReviewState(value: unknown): value is ReviewState {
       ([findingId, finding]) =>
         isFinding(finding) &&
         finding.id === findingId &&
-        findingOrderHasFinding(findingOrder, findingId)
+        findingOrderHasFinding(findingOrder, findingId),
     ) &&
-    findingOrder.every((findingId) =>
-      Object.prototype.hasOwnProperty.call(findings, findingId)
-    ) &&
+    findingOrder.every((findingId) => Object.hasOwn(findings, findingId)) &&
     comments.every(isComment) &&
     activity.every(isActivityEvent)
   );
@@ -345,7 +341,9 @@ export function getReviewDemoStateStorageKey(matterId: string) {
   return `${reviewDemoStateStoragePrefix}${matterId}`;
 }
 
-export function readPersistedReviewDemoState(matterId: string): ReviewState | null {
+export function readPersistedReviewDemoState(
+  matterId: string,
+): ReviewState | null {
   if (typeof window === "undefined") {
     return null;
   }
@@ -406,7 +404,7 @@ export function resolveReviewDemoState(matter: Matter): ReviewState {
 
 export function subscribeToReviewDemoState(
   matterId: string,
-  onStoreChange: () => void
+  onStoreChange: () => void,
 ) {
   if (typeof window === "undefined") {
     return () => {};
@@ -442,7 +440,7 @@ export function subscribeToReviewDemoState(
   }
   window.addEventListener(
     reviewDemoStateChangedEvent,
-    handleStateChanged as EventListener
+    handleStateChanged as EventListener,
   );
 
   return () => {
@@ -451,7 +449,7 @@ export function subscribeToReviewDemoState(
     }
     window.removeEventListener(
       reviewDemoStateChangedEvent,
-      handleStateChanged as EventListener
+      handleStateChanged as EventListener,
     );
   };
 }
@@ -475,12 +473,16 @@ export function persistReviewDemoState(matterId: string, state: ReviewState) {
   window.dispatchEvent(
     new CustomEvent(reviewDemoStateChangedEvent, {
       detail: { matterId },
-    })
+    }),
   );
 }
 
 export function useReviewDemoState(matter: Matter) {
-  const [state, dispatch] = useReducer(reviewReducer, matter, resolveReviewDemoState);
+  const [state, dispatch] = useReducer(
+    reviewReducer,
+    matter,
+    resolveReviewDemoState,
+  );
 
   useEffect(() => {
     persistReviewDemoState(matter.id, state);
@@ -503,7 +505,7 @@ export function useReviewDemoState(matter: Matter) {
   const selectedClauseActivity = selectedClause
     ? state.activity
         .filter((event) =>
-          eventMatchesClause(event, selectedClause.id, state.findings)
+          eventMatchesClause(event, selectedClause.id, state.findings),
         )
         .slice()
         .reverse()
@@ -513,14 +515,14 @@ export function useReviewDemoState(matter: Matter) {
       counts[finding.clauseId] = (counts[finding.clauseId] ?? 0) + 1;
       return counts;
     },
-    {}
+    {},
   );
   const clauseCommentCounts = state.comments.reduce<Record<string, number>>(
     (counts, comment) => {
       counts[comment.clauseId] = (counts[comment.clauseId] ?? 0) + 1;
       return counts;
     },
-    {}
+    {},
   );
   const pendingDecisionCount =
     state.summary.totalFindings - state.summary.reviewedCount;
@@ -528,7 +530,7 @@ export function useReviewDemoState(matter: Matter) {
     state.summary.totalFindings === 0
       ? 0
       : Math.round(
-          (state.summary.reviewedCount / state.summary.totalFindings) * 100
+          (state.summary.reviewedCount / state.summary.totalFindings) * 100,
         );
 
   return {

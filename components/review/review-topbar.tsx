@@ -55,16 +55,28 @@ export function ReviewTopbar({
   const runPresentation = describeActiveRun(activeRun);
 
   return (
-    <section className={cn("glass-tile overflow-hidden rounded-2xl", className)}>
+    <section
+      className={cn("glass-tile overflow-hidden rounded-2xl", className)}
+    >
       <div className="grid gap-6 px-[var(--tile-inset)] py-6 lg:grid-cols-[minmax(0,1.25fr)_minmax(300px,0.75fr)] lg:items-start">
         <div className="space-y-5">
-          <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-3 text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-[var(--muted-foreground)]">
-            <Link href={`/matters/${matter.id}`} className="hover:text-[var(--foreground)]">
+          <nav
+            aria-label="Breadcrumb"
+            className="flex flex-wrap items-center gap-3 text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-[var(--muted-foreground)]"
+          >
+            <Link
+              href={`/matters/${matter.id}`}
+              className="hover:text-[var(--foreground)]"
+            >
               Matter
             </Link>
-            <span aria-hidden="true" className="opacity-30">/</span>
+            <span aria-hidden="true" className="opacity-30">
+              /
+            </span>
             <span>{matter.title}</span>
-            <span aria-hidden="true" className="opacity-30">/</span>
+            <span aria-hidden="true" className="opacity-30">
+              /
+            </span>
             <span className="text-[var(--foreground)]">Review workspace</span>
           </nav>
 
@@ -81,16 +93,13 @@ export function ReviewTopbar({
             </div>
 
             <div>
-              <h1
-                className="document-type text-[2.7rem] leading-[0.96] tracking-[-0.06em] sm:text-[3.2rem]"
-                style={{ viewTransitionName: "document-title" }}
-              >
+              <h1 className="document-type text-[2.7rem] leading-[0.96] tracking-[-0.06em] sm:text-[3.2rem]">
                 {matter.document.title}
               </h1>
               <p className="mt-3 max-w-3xl text-[1rem] leading-7 text-[var(--muted-foreground)]">
-                {pendingDecisionCount} findings need final decisions before partner
-                sign-off. Review the cited clause language, compare the edit, and
-                record the right call without losing context.
+                {pendingDecisionCount} findings need final decisions before
+                partner sign-off. Review the cited clause language, compare the
+                edit, and record the right call without losing context.
               </p>
             </div>
           </div>
@@ -101,7 +110,10 @@ export function ReviewTopbar({
               { label: "Pending findings", value: pendingDecisionCount },
               { label: "Open comments", value: summary.unresolvedCommentCount },
             ].map((stat) => (
-              <div key={stat.label} className="rounded-[1.4rem] border border-[var(--glass-border)] bg-[rgba(255,255,255,0.52)] px-4 py-4">
+              <div
+                key={stat.label}
+                className="rounded-[1.4rem] border border-[var(--glass-border)] bg-[rgba(255,255,255,0.52)] px-4 py-4"
+              >
                 <p className="text-[0.68rem] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
                   {stat.label}
                 </p>
@@ -119,7 +131,8 @@ export function ReviewTopbar({
                   Active reviewers
                 </p>
                 <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">
-                  Human ownership stays visible while the queue moves toward a final call.
+                  Human ownership stays visible while the queue moves toward a
+                  final call.
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -137,19 +150,30 @@ export function ReviewTopbar({
                         <div className="relative flex size-10 shrink-0 items-center justify-center rounded-full bg-[rgba(255,255,255,0.82)] text-xs font-semibold">
                           {collaborator.initials}
                           <span
+                            role="status"
                             className={`absolute right-0 top-0 flex size-3.5 items-center justify-center rounded-full border-2 border-[#fffaf4] text-[6px] font-bold ${
                               waitingStatus
                                 ? "bg-amber-400 text-amber-950"
                                 : "bg-emerald-400 text-emerald-950"
                             }`}
-                            aria-label={waitingStatus ? `Waiting on ${waitingStatus.waitingOn}` : "Active"}
-                            title={waitingStatus ? `Waiting on ${waitingStatus.waitingOn}` : "Active"}
+                            aria-label={
+                              waitingStatus
+                                ? `Waiting on ${waitingStatus.waitingOn}`
+                                : "Active"
+                            }
+                            title={
+                              waitingStatus
+                                ? `Waiting on ${waitingStatus.waitingOn}`
+                                : "Active"
+                            }
                           >
                             {waitingStatus ? "!" : ""}
                           </span>
                         </div>
                         <div className="min-w-0">
-                          <p className="text-sm font-semibold">{collaborator.name}</p>
+                          <p className="text-sm font-semibold">
+                            {collaborator.name}
+                          </p>
                           <p className="text-[0.68rem] uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
                             {collaborator.title}
                           </p>
@@ -187,8 +211,13 @@ export function ReviewTopbar({
               { label: "Needs follow-up", value: summary.needsFollowUpCount },
               { label: "Rejected", value: summary.rejectedCount },
             ].map((row) => (
-              <div key={row.label} className="flex items-center justify-between gap-3">
-                <span className="text-[var(--muted-foreground)]">{row.label}</span>
+              <div
+                key={row.label}
+                className="flex items-center justify-between gap-3"
+              >
+                <span className="text-[var(--muted-foreground)]">
+                  {row.label}
+                </span>
                 <span className="font-medium">{row.value}</span>
               </div>
             ))}
@@ -213,8 +242,8 @@ export function ReviewTopbar({
               />
             </div>
             <p className="text-xs leading-5 text-[var(--muted-foreground)]">
-              The queue stays readable because the citation, edit, and decision all
-              live close to the clause they affect.
+              The queue stays readable because the citation, edit, and decision
+              all live close to the clause they affect.
             </p>
           </div>
         </aside>

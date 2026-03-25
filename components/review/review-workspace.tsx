@@ -32,7 +32,7 @@ const decisionLabels: Record<string, string> = {
 
 function selectActiveRun(agentRuns: Matter["agentRuns"]) {
   const runNeedingHumanReview = agentRuns.find(
-    (run) => run.status.kind === "needs_human_review"
+    (run) => run.status.kind === "needs_human_review",
   );
 
   if (runNeedingHumanReview) {
@@ -75,10 +75,10 @@ export function ReviewWorkspace({ matter }: ReviewWorkspaceProps) {
   });
 
   const findingById = Object.fromEntries(
-    review.findings.map((finding) => [finding.id, finding])
+    review.findings.map((finding) => [finding.id, finding]),
   );
   const firstFindingByClause = Object.fromEntries(
-    review.findings.map((finding) => [finding.clauseId, finding.id])
+    review.findings.map((finding) => [finding.clauseId, finding.id]),
   );
 
   function clearPreview(source?: "queue" | "document") {
@@ -110,7 +110,7 @@ export function ReviewWorkspace({ matter }: ReviewWorkspaceProps) {
 
   function handlePreviewFinding(
     findingId: string | null,
-    source: "queue" | "document"
+    source: "queue" | "document",
   ) {
     if (!findingId) {
       clearPreview(source);

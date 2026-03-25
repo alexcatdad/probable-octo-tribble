@@ -21,23 +21,46 @@ export function SuggestedEditCard({
 }: SuggestedEditCardProps) {
   const decisionPresentation =
     finding?.decision.kind === "accepted"
-      ? { label: "Accepted", tone: "border-[var(--tone-success-border)] bg-[var(--tone-success)] text-[var(--tone-success-text)]" }
+      ? {
+          label: "Accepted",
+          tone: "border-[var(--tone-success-border)] bg-[var(--tone-success)] text-[var(--tone-success-text)]",
+        }
       : finding?.decision.kind === "rejected"
-        ? { label: "Rejected", tone: "border-[var(--tone-danger-border)] bg-[var(--tone-danger)] text-[var(--tone-danger-text)]" }
+        ? {
+            label: "Rejected",
+            tone: "border-[var(--tone-danger-border)] bg-[var(--tone-danger)] text-[var(--tone-danger-text)]",
+          }
         : finding?.decision.kind === "needs_follow_up"
-          ? { label: "Needs follow-up", tone: "border-[var(--tone-neutral-border)] bg-[var(--tone-neutral)] text-[var(--muted-foreground)]" }
-          : { label: "Pending decision", tone: "border-[var(--tone-warning-border)] bg-[var(--tone-warning)] text-[var(--tone-warning-text)]" };
+          ? {
+              label: "Needs follow-up",
+              tone: "border-[var(--tone-neutral-border)] bg-[var(--tone-neutral)] text-[var(--muted-foreground)]",
+            }
+          : {
+              label: "Pending decision",
+              tone: "border-[var(--tone-warning-border)] bg-[var(--tone-warning)] text-[var(--tone-warning-text)]",
+            };
 
   if (!finding) {
     return (
-      <section className={cn("glass-tile rounded-2xl px-[var(--tile-inset)] py-5 text-[var(--muted-foreground)]", className)}>
+      <section
+        className={cn(
+          "glass-tile rounded-2xl px-[var(--tile-inset)] py-5 text-[var(--muted-foreground)]",
+          className,
+        )}
+      >
         Select a finding to compare the clause language and record the decision.
       </section>
     );
   }
 
   return (
-    <section aria-label="Suggested edit" className={cn("glass-tile rounded-2xl px-[var(--tile-inset)] py-5", className)}>
+    <section
+      aria-label="Suggested edit"
+      className={cn(
+        "glass-tile rounded-2xl px-[var(--tile-inset)] py-5",
+        className,
+      )}
+    >
       <div className="mb-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="section-kicker">Suggested edit</p>
@@ -52,8 +75,8 @@ export function SuggestedEditCard({
           {finding.suggestedEdit.summary}
         </h2>
         <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">
-          {clauseLabel}. Review the existing language, compare the proposed edit,
-          and make the final call.
+          {clauseLabel}. Review the existing language, compare the proposed
+          edit, and make the final call.
         </p>
       </div>
 

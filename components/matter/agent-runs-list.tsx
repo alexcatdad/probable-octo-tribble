@@ -7,7 +7,7 @@ import { cn, formatTimestamp } from "@/lib/utils";
 
 function statusCopy(
   status: AgentRunStatus,
-  collaborators: Collaborator[]
+  collaborators: Collaborator[],
 ): { label: string; tone: string; detail: string } {
   switch (status.kind) {
     case "completed":
@@ -24,8 +24,8 @@ function statusCopy(
       };
     case "needs_human_review": {
       const requestedBy =
-        collaborators.find((person) => person.id === status.requestedBy)?.name ??
-        "Reviewer";
+        collaborators.find((person) => person.id === status.requestedBy)
+          ?.name ?? "Reviewer";
       return {
         label: "needs human review",
         tone: "border-[var(--tone-warning-border)] bg-[var(--tone-warning)] text-[var(--tone-warning-text)]",
@@ -41,13 +41,22 @@ interface AgentRunsListProps {
   collaborators: Collaborator[];
 }
 
-export function AgentRunsList({ className, agentRuns, collaborators }: AgentRunsListProps) {
+export function AgentRunsList({
+  className,
+  agentRuns,
+  collaborators,
+}: AgentRunsListProps) {
   const orderedRuns = [...agentRuns].sort(
-    (left, right) => Date.parse(right.startedAt) - Date.parse(left.startedAt)
+    (left, right) => Date.parse(right.startedAt) - Date.parse(left.startedAt),
   );
 
   return (
-    <section className={cn("glass-tile rounded-2xl px-[var(--tile-inset)] py-5", className)}>
+    <section
+      className={cn(
+        "glass-tile rounded-2xl px-[var(--tile-inset)] py-5",
+        className,
+      )}
+    >
       <div className="mb-4">
         <p className="section-kicker">Agent runs</p>
         <h2 className="mt-2 font-heading text-[1.85rem] leading-none tracking-[-0.05em]">

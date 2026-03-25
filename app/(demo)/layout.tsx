@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { ViewTransition } from "react";
 
 export default function DemoLayout({
   children,
@@ -12,7 +11,10 @@ export default function DemoLayout({
       <div className="page-grid mx-auto w-full max-w-7xl">
         {/* Header spans the full grid row */}
         <header className="col-span-12 flex flex-wrap items-center justify-between gap-4 rounded-[1.8rem] border border-[var(--glass-border)] bg-[rgba(255,252,248,0.78)] px-[var(--tile-inset)] py-4 shadow-[0_16px_46px_-34px_rgba(58,39,17,0.26)]">
-          <nav aria-label="Primary navigation" className="flex items-center gap-4">
+          <nav
+            aria-label="Primary navigation"
+            className="flex items-center gap-4"
+          >
             <Link
               href="/"
               className="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-[var(--foreground)] hover:text-[var(--accent-bronze)]"
@@ -32,11 +34,12 @@ export default function DemoLayout({
         </header>
 
         {/* Content inherits the same grid columns via display:contents */}
-        <ViewTransition>
-          <main id="main-content" className="col-span-12 grid grid-cols-subgrid gap-y-5 pb-10 pt-1">
-            {children}
-          </main>
-        </ViewTransition>
+        <main
+          id="main-content"
+          className="col-span-12 grid grid-cols-subgrid gap-y-5 pb-10 pt-1"
+        >
+          {children}
+        </main>
       </div>
     </div>
   );

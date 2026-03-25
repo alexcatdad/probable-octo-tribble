@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils";
 import type { Finding } from "@/lib/types/legal-demo";
+import { cn } from "@/lib/utils";
 
 function severityTone(severity: Finding["severity"]) {
   switch (severity) {
@@ -78,10 +78,14 @@ export function FindingCard({
         className="block w-full rounded-[1.3rem] px-4 py-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-bronze)]"
       >
         <div className="flex flex-wrap items-start justify-between gap-2">
-          <span className={`rounded-full border px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.14em] ${severityTone(finding.severity)}`}>
+          <span
+            className={`rounded-full border px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.14em] ${severityTone(finding.severity)}`}
+          >
             {finding.severity}
           </span>
-          <span className={`rounded-full border px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.14em] ${decisionTone(finding.decision.kind)}`}>
+          <span
+            className={`rounded-full border px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.14em] ${decisionTone(finding.decision.kind)}`}
+          >
             {decisionLabel(finding.decision.kind)}
           </span>
         </div>
@@ -91,7 +95,9 @@ export function FindingCard({
           </p>
         ) : null}
 
-        <h3 className="mt-3 text-sm font-semibold leading-6">{finding.title}</h3>
+        <h3 className="mt-3 text-sm font-semibold leading-6">
+          {finding.title}
+        </h3>
         <p className="mt-2 text-xs uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
           {clauseLabel}
         </p>

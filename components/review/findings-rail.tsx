@@ -34,7 +34,10 @@ interface FindingsRailProps {
   previewSource: "queue" | "document" | null;
   selectedFinding?: Finding;
   onSelectFinding: (findingId: string) => void;
-  onPreviewFinding: (findingId: string | null, source: "queue" | "document") => void;
+  onPreviewFinding: (
+    findingId: string | null,
+    source: "queue" | "document",
+  ) => void;
   onAcceptSuggestion: (findingId: string) => void;
   onRejectSuggestion: (findingId: string) => void;
   onMarkNeedsFollowUp: (findingId: string) => void;
@@ -64,24 +67,26 @@ export function FindingsRail({
         return finding.severity === "high";
       case "needs_follow_up":
         return finding.decision.kind === "needs_follow_up";
-      case "all":
       default:
         return true;
     }
   });
   const nextUnreviewed = filteredFindings.find(
     (finding) =>
-      finding.decision.kind === "pending" && finding.id !== selectedFindingId
+      finding.decision.kind === "pending" && finding.id !== selectedFindingId,
   );
   const fallbackUnreviewed = filteredFindings.find(
-    (finding) => finding.decision.kind === "pending"
+    (finding) => finding.decision.kind === "pending",
   );
   const jumpTargetFinding = nextUnreviewed ?? fallbackUnreviewed;
 
   return (
     <aside
       aria-label="Findings rail"
-      className={cn("space-y-4 min-[1180px]:sticky min-[1180px]:top-5", className)}
+      className={cn(
+        "space-y-4 min-[1180px]:sticky min-[1180px]:top-5",
+        className,
+      )}
     >
       <section className="glass-tile-strong rounded-2xl px-[var(--tile-inset)] py-5">
         <div className="mb-4">
@@ -138,11 +143,14 @@ export function FindingsRail({
               <FindingCard
                 key={finding.id}
                 finding={finding}
-                clauseLabel={clauseLabels.get(finding.clauseId) ?? finding.clauseId}
+                clauseLabel={
+                  clauseLabels.get(finding.clauseId) ?? finding.clauseId
+                }
                 isSelected={finding.id === selectedFindingId}
                 isPreviewed={previewFindingId === finding.id}
                 previewLabel={
-                  previewFindingId === finding.id && previewSource === "document"
+                  previewFindingId === finding.id &&
+                  previewSource === "document"
                     ? "Clause focus"
                     : undefined
                 }
@@ -164,7 +172,8 @@ export function FindingsRail({
         finding={selectedFinding}
         clauseLabel={
           selectedFinding
-            ? clauseLabels.get(selectedFinding.clauseId) ?? selectedFinding.clauseId
+            ? (clauseLabels.get(selectedFinding.clauseId) ??
+              selectedFinding.clauseId)
             : undefined
         }
         onAcceptSuggestion={onAcceptSuggestion}

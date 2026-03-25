@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import { seedMatter, seedReviewState } from "@/lib/demo-data/matter";
 import { MatterOverviewShell } from "@/components/matter/matter-overview-shell";
+import { seedMatter, seedReviewState } from "@/lib/demo-data/matter";
 
 interface MatterOverviewPageProps {
   params: Promise<{

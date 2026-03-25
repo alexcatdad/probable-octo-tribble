@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { ArrowRight, FileText } from "lucide-react";
+import Link from "next/link";
 import type { ContractDocument, ReviewSummary } from "@/lib/types/legal-demo";
 import { cn, pluralise } from "@/lib/utils";
 
@@ -18,7 +18,7 @@ export function DocumentStatusCard({
 }: DocumentStatusCardProps) {
   const clauseCount = document.sections.reduce(
     (total, section) => total + section.clauses.length,
-    0
+    0,
   );
   const progressPercent =
     summary.totalFindings === 0
@@ -27,7 +27,9 @@ export function DocumentStatusCard({
   const pendingCount = summary.totalFindings - summary.reviewedCount;
 
   return (
-    <section className={cn("glass-tile overflow-hidden rounded-2xl", className)}>
+    <section
+      className={cn("glass-tile overflow-hidden rounded-2xl", className)}
+    >
       <div className="grid gap-6 px-[var(--tile-inset)] py-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(280px,0.7fr)] lg:gap-7">
         <div className="space-y-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
@@ -43,16 +45,13 @@ export function DocumentStatusCard({
                   </span>
                   <span>{document.sections.length} sections in scope</span>
                 </div>
-                <h2
-                  className="document-type text-[2.45rem] leading-[0.98] tracking-[-0.05em] sm:text-[2.9rem]"
-                  style={{ viewTransitionName: "document-title" }}
-                >
+                <h2 className="document-type text-[2.45rem] leading-[0.98] tracking-[-0.05em] sm:text-[2.9rem]">
                   {document.title}
                 </h2>
                 <p className="max-w-2xl text-[1rem] leading-7 text-[var(--muted-foreground)]">
-                  The matter is in active clause review. {summary.totalFindings} cited
-                  findings remain visible while the team records final decisions and
-                  prepares the file for partner sign-off.
+                  The matter is in active clause review. {summary.totalFindings}{" "}
+                  cited findings remain visible while the team records final
+                  decisions and prepares the file for partner sign-off.
                 </p>
               </div>
             </div>
@@ -70,7 +69,8 @@ export function DocumentStatusCard({
             <div className="flex flex-wrap items-center justify-between gap-3">
               <p className="section-kicker">Decision coverage</p>
               <p className="text-sm font-medium">
-                {summary.reviewedCount} of {summary.totalFindings} decisions recorded
+                {summary.reviewedCount} of {summary.totalFindings} decisions
+                recorded
               </p>
             </div>
             <div
@@ -99,7 +99,10 @@ export function DocumentStatusCard({
               { label: "Clauses in scope", value: clauseCount },
               { label: "Open comments", value: summary.unresolvedCommentCount },
             ].map((stat) => (
-              <div key={stat.label} className="calm-transition rounded-[1.4rem] border border-[var(--glass-border)] bg-[rgba(255,255,255,0.52)] px-4 py-4">
+              <div
+                key={stat.label}
+                className="calm-transition rounded-[1.4rem] border border-[var(--glass-border)] bg-[rgba(255,255,255,0.52)] px-4 py-4"
+              >
                 <dt className="section-kicker">{stat.label}</dt>
                 <dd className="mt-2 font-heading text-[2rem] leading-none tracking-[-0.05em]">
                   {stat.value}
@@ -127,8 +130,13 @@ export function DocumentStatusCard({
                 { label: "Needs follow-up", value: summary.needsFollowUpCount },
                 { label: "Rejected", value: summary.rejectedCount },
               ].map((row) => (
-                <div key={row.label} className="flex items-center justify-between gap-4 rounded-xl bg-[rgba(255,255,255,0.54)] px-3 py-2">
-                  <span className="text-[var(--muted-foreground)]">{row.label}</span>
+                <div
+                  key={row.label}
+                  className="flex items-center justify-between gap-4 rounded-xl bg-[rgba(255,255,255,0.54)] px-3 py-2"
+                >
+                  <span className="text-[var(--muted-foreground)]">
+                    {row.label}
+                  </span>
                   <span className="font-medium">{row.value}</span>
                 </div>
               ))}

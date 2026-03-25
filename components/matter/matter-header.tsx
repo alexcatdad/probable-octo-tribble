@@ -33,7 +33,9 @@ export function MatterHeader({
             className="flex flex-wrap items-center gap-3 text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-[var(--muted-foreground)]"
           >
             <span>Matter</span>
-            <span aria-hidden="true" className="opacity-30">/</span>
+            <span aria-hidden="true" className="opacity-30">
+              /
+            </span>
             <span className="text-[var(--foreground)]">{matter.title}</span>
           </nav>
 

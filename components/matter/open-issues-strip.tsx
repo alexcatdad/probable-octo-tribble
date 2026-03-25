@@ -41,7 +41,12 @@ export function OpenIssuesStrip({
   };
 
   return (
-    <section className={cn("glass-tile overflow-hidden rounded-2xl px-6 py-5", className)}>
+    <section
+      className={cn(
+        "glass-tile overflow-hidden rounded-2xl px-6 py-5",
+        className,
+      )}
+    >
       <div className="mb-3 flex items-center justify-between gap-4">
         <div>
           <p className="section-kicker">Needs attention now</p>
@@ -63,7 +68,9 @@ export function OpenIssuesStrip({
             <p className="mt-3 font-heading text-[2.6rem] leading-none tracking-[-0.05em] text-[var(--foreground)]">
               {values[item.key]}
             </p>
-            <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">{item.note}</p>
+            <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">
+              {item.note}
+            </p>
           </article>
         ))}
       </div>

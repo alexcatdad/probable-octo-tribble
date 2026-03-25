@@ -15,8 +15,7 @@ export const seedDocument: ContractDocument = {
           sectionId: "section-indemnity",
           order: 1,
           title: "Vendor indemnity",
-          text:
-            "Vendor will defend, indemnify, and hold harmless Customer, its affiliates, and their officers, directors, employees, and agents from any claims arising out of the Services, the Data, or any breach of this Agreement, except to the extent caused by Customer Materials or Customer instructions.",
+          text: "Vendor will defend, indemnify, and hold harmless Customer, its affiliates, and their officers, directors, employees, and agents from any claims arising out of the Services, the Data, or any breach of this Agreement, except to the extent caused by Customer Materials or Customer instructions.",
         },
       ],
     },
@@ -30,8 +29,7 @@ export const seedDocument: ContractDocument = {
           sectionId: "section-liability",
           order: 1,
           title: "Liability cap",
-          text:
-            "Each party's aggregate liability will not exceed the fees paid or payable in the twelve months before the event giving rise to the claim, except for confidentiality breaches and indemnity obligations.",
+          text: "Each party's aggregate liability will not exceed the fees paid or payable in the twelve months before the event giving rise to the claim, except for confidentiality breaches and indemnity obligations.",
         },
       ],
     },
@@ -45,8 +43,7 @@ export const seedDocument: ContractDocument = {
           sectionId: "section-data-protection",
           order: 1,
           title: "Security incident notice",
-          text:
-            "Vendor will notify Customer of any Security Incident within 72 hours after confirmation and will maintain a current subprocessor list on request.",
+          text: "Vendor will notify Customer of any Security Incident within 72 hours after confirmation and will maintain a current subprocessor list on request.",
         },
       ],
     },
@@ -60,11 +57,9 @@ export const seedDocument: ContractDocument = {
           sectionId: "section-termination",
           order: 1,
           title: "Auto-renewal",
-          text:
-            "The Agreement renews automatically for successive 12 month terms unless either party gives at least 90 days' written notice before the end of the then-current term.",
+          text: "The Agreement renews automatically for successive 12 month terms unless either party gives at least 90 days' written notice before the end of the then-current term.",
         },
       ],
     },
   ],
 };
-

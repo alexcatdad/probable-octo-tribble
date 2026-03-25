@@ -22,11 +22,18 @@ interface ActivityPanelProps {
   activity: ActivityEvent[];
 }
 
-export function ActivityPanel({ className, clause, activity }: ActivityPanelProps) {
+export function ActivityPanel({
+  className,
+  clause,
+  activity,
+}: ActivityPanelProps) {
   return (
     <section
       aria-label="Clause activity"
-      className={cn("glass-tile rounded-2xl px-[var(--tile-inset)] py-5", className)}
+      className={cn(
+        "glass-tile rounded-2xl px-[var(--tile-inset)] py-5",
+        className,
+      )}
     >
       <div className="mb-4">
         <p className="section-kicker">Activity</p>
@@ -59,7 +66,9 @@ export function ActivityPanel({ className, clause, activity }: ActivityPanelProp
                   {formatTimestamp(event.occurredAt)}
                 </span>
               </div>
-              <p className="mt-3 text-sm leading-6 text-[var(--muted-foreground)]">{event.message}</p>
+              <p className="mt-3 text-sm leading-6 text-[var(--muted-foreground)]">
+                {event.message}
+              </p>
             </article>
           ))
         )}

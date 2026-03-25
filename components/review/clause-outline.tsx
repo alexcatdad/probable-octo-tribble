@@ -1,5 +1,5 @@
-import { cn, pluralise } from "@/lib/utils";
 import type { ContractDocument } from "@/lib/types/legal-demo";
+import { cn, pluralise } from "@/lib/utils";
 
 interface ClauseOutlineProps {
   className?: string;
@@ -21,7 +21,10 @@ export function ClauseOutline({
   return (
     <aside
       aria-label="Clause outline"
-      className={cn("glass-tile rounded-2xl px-4 py-4 xl:sticky xl:top-5", className)}
+      className={cn(
+        "glass-tile rounded-2xl px-4 py-4 xl:sticky xl:top-5",
+        className,
+      )}
     >
       <div className="mb-4">
         <p className="section-kicker">Clause outline</p>

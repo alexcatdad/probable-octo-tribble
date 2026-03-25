@@ -7,7 +7,9 @@ vi.mock("react", async (importOriginal) => {
   const actual = await importOriginal<typeof import("react")>();
   return {
     ...actual,
-    ViewTransition: actual.ViewTransition ?? (({ children }: { children: React.ReactNode }) => children),
+    ViewTransition:
+      actual.ViewTransition ??
+      (({ children }: { children: React.ReactNode }) => children),
   };
 });
 

@@ -1,10 +1,10 @@
-import Link from "next/link";
 import {
   ArrowRight,
   BrainCircuit,
   FileSearch,
   ShieldCheck,
 } from "lucide-react";
+import Link from "next/link";
 
 const proofPoints = [
   {
@@ -28,17 +28,20 @@ const workflowSteps = [
   {
     icon: FileSearch,
     label: "Matter intake",
-    summary: "Open the matter, confirm posture, and inspect the active document.",
+    summary:
+      "Open the matter, confirm posture, and inspect the active document.",
   },
   {
     icon: BrainCircuit,
     label: "Clause triage",
-    summary: "Review cited findings, compare edits, and keep each decision explicit.",
+    summary:
+      "Review cited findings, compare edits, and keep each decision explicit.",
   },
   {
     icon: ShieldCheck,
     label: "Partner handoff",
-    summary: "Leave the review with clearer status, open questions, and documented reasoning.",
+    summary:
+      "Leave the review with clearer status, open questions, and documented reasoning.",
   },
 ];
 
@@ -73,9 +76,9 @@ export default function Home() {
               Contract review, prepared for human judgment.
             </h1>
             <p className="mt-6 max-w-2xl text-[1rem] leading-8 text-[var(--muted-foreground)] sm:text-[1.05rem]">
-              A reading-first workflow for matter posture, cited clause findings,
-              and partner-ready decisions. The product feels intentional from the
-              first overview through the final review pass.
+              A reading-first workflow for matter posture, cited clause
+              findings, and partner-ready decisions. The product feels
+              intentional from the first overview through the final review pass.
             </p>
           </div>
 
@@ -87,6 +90,7 @@ export default function Home() {
               Open sample matter
               <ArrowRight className="size-4" />
             </Link>
+
             <div className="text-sm leading-6 text-[var(--muted-foreground)]">
               <p className="font-medium text-[var(--foreground)]">
                 Acme Co. v. OmniCore Ltd.
@@ -112,8 +116,8 @@ export default function Home() {
           </div>
 
           <p className="mt-4 text-sm leading-7 text-[var(--muted-foreground)]">
-            A cleaner matter brief that leads with current status, review load, and
-            the fastest path back into the contract.
+            A cleaner matter brief that leads with current status, review load,
+            and the fastest path back into the contract.
           </p>
 
           <dl className="mt-6 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
@@ -150,8 +154,8 @@ export default function Home() {
               <div className="h-full w-[28%] rounded-full bg-[linear-gradient(90deg,#b98d64,#f6e7d2)]" />
             </div>
             <p className="mt-4 text-sm leading-6 text-[var(--muted-foreground)]">
-              Open the matter overview, scan what still needs judgment, then move
-              into the document with a cleaner review queue.
+              Open the matter overview, scan what still needs judgment, then
+              move into the document with a cleaner review queue.
             </p>
           </div>
         </aside>
@@ -209,7 +213,10 @@ export default function Home() {
               >
                 <div className="flex items-center gap-3">
                   <div className="flex size-11 items-center justify-center rounded-2xl border border-[var(--glass-border)] bg-[rgba(255,255,255,0.62)]">
-                    <Icon className="size-4 text-[#e8c697]" aria-hidden="true" />
+                    <Icon
+                      className="size-4 text-[#e8c697]"
+                      aria-hidden="true"
+                    />
                   </div>
                   <div>
                     <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--muted-foreground)]">
