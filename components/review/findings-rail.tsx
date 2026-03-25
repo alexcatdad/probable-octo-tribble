@@ -15,14 +15,14 @@ const queueFilters: Array<{ id: ReviewQueueFilter; label: string }> = [
   { id: "needs_follow_up", label: "Needs follow-up" },
 ];
 
-function clauseTitleForFinding(document: ContractDocument, finding: Finding) {
+function buildClauseLabels(document: ContractDocument): Map<string, string> {
+  const labels = new Map<string, string>();
   for (const section of document.sections) {
-    const clause = section.clauses.find((item) => item.id === finding.clauseId);
-    if (clause) {
-      return `${section.order}.${clause.order} ${clause.title}`;
+    for (const clause of section.clauses) {
+      labels.set(clause.id, `${section.order}.${clause.order} ${clause.title}`);
     }
   }
-  return finding.clauseId;
+  return labels;
 }
 
 interface FindingsRailProps {
@@ -55,6 +55,7 @@ export function FindingsRail({
   onMarkNeedsFollowUp,
 }: FindingsRailProps) {
   const [activeFilter, setActiveFilter] = useState<ReviewQueueFilter>("all");
+  const clauseLabels = buildClauseLabels(document);
   const filteredFindings = findings.filter((finding) => {
     switch (activeFilter) {
       case "unreviewed":
@@ -138,7 +139,7 @@ export function FindingsRail({
               <FindingCard
                 key={finding.id}
                 finding={finding}
-                clauseLabel={clauseTitleForFinding(document, finding)}
+                clauseLabel={clauseLabels.get(finding.clauseId) ?? finding.clauseId}
                 isSelected={finding.id === selectedFindingId}
                 isPreviewed={previewFindingId === finding.id}
                 previewLabel={
@@ -164,7 +165,7 @@ export function FindingsRail({
         finding={selectedFinding}
         clauseLabel={
           selectedFinding
-            ? clauseTitleForFinding(document, selectedFinding)
+            ? clauseLabels.get(selectedFinding.clauseId) ?? selectedFinding.clauseId
             : undefined
         }
         onAcceptSuggestion={onAcceptSuggestion}

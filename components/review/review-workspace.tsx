@@ -39,9 +39,15 @@ function selectActiveRun(agentRuns: Matter["agentRuns"]) {
     return runNeedingHumanReview;
   }
 
-  return [...agentRuns].sort(
-    (left, right) => Date.parse(right.startedAt) - Date.parse(left.startedAt)
-  )[0];
+  if (agentRuns.length === 0) return undefined;
+
+  let latest = agentRuns[0];
+  for (let i = 1; i < agentRuns.length; i++) {
+    if (Date.parse(agentRuns[i].startedAt) > Date.parse(latest.startedAt)) {
+      latest = agentRuns[i];
+    }
+  }
+  return latest;
 }
 
 export function ReviewWorkspace({ matter }: ReviewWorkspaceProps) {

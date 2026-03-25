@@ -53,20 +53,38 @@ function buildReviewSummary(
   findings: Finding[],
   comments: Comment[]
 ): ReviewSummary {
-  const reviewedFindings = findings.filter(
-    (finding) => finding.decision.kind !== "pending"
-  );
+  let acceptedCount = 0;
+  let rejectedCount = 0;
+  let needsFollowUpCount = 0;
+
+  for (const finding of findings) {
+    switch (finding.decision.kind) {
+      case "accepted":
+        acceptedCount++;
+        break;
+      case "rejected":
+        rejectedCount++;
+        break;
+      case "needs_follow_up":
+        needsFollowUpCount++;
+        break;
+    }
+  }
+
+  const reviewedCount = acceptedCount + rejectedCount + needsFollowUpCount;
+
+  let unresolvedCommentCount = 0;
+  for (const comment of comments) {
+    if (comment.status !== "resolved") unresolvedCommentCount++;
+  }
 
   return {
     totalFindings: findings.length,
-    reviewedCount: reviewedFindings.length,
-    acceptedCount: findings.filter((finding) => finding.decision.kind === "accepted").length,
-    rejectedCount: findings.filter((finding) => finding.decision.kind === "rejected").length,
-    needsFollowUpCount: findings.filter(
-      (finding) => finding.decision.kind === "needs_follow_up"
-    ).length,
-    unresolvedCommentCount: comments.filter((comment) => comment.status !== "resolved")
-      .length,
+    reviewedCount,
+    acceptedCount,
+    rejectedCount,
+    needsFollowUpCount,
+    unresolvedCommentCount,
   };
 }
 
@@ -79,12 +97,6 @@ function findClause(document: ContractDocument, clauseId: string): Clause | unde
   }
 
   return undefined;
-}
-
-function findClauseById(state: ReviewState, clauseId: string): Clause | undefined {
-  return state.document.sections
-    .flatMap((section) => section.clauses)
-    .find((clause) => clause.id === clauseId);
 }
 
 function firstFindingForClause(
@@ -206,7 +218,7 @@ export function reviewReducer(
 ): ReviewState {
   switch (action.type) {
     case "select_clause": {
-      const clause = findClauseById(state, action.clauseId);
+      const clause = selectClauseById(state, action.clauseId);
 
       if (!clause) {
         return state;
